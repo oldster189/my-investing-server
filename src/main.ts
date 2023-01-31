@@ -7,6 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
   app.useGlobalInterceptors(new TransformReponseInterceptor())
 
-  await app.listen(3000)
+  await app.listen(8080)
 }
 bootstrap()
