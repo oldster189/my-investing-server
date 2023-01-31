@@ -1,0 +1,48 @@
+import { PartialType } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
+import { IsEnum, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
+import { StocksType } from 'src/shared/enums/stocks-type.enum'
+import { DividendRequest } from './dividen.request'
+
+export class CreateStocksRequest {
+  @IsNotEmpty()
+  symbol: string
+
+  @IsNotEmpty()
+  company: string
+
+  @IsOptional()
+  @IsEnum(StocksType)
+  type: string
+
+  @IsOptional()
+  sector: string
+
+  @IsOptional()
+  industry: string
+
+  @IsOptional()
+  exchange: string
+
+  @IsOptional()
+  country: string
+
+  @IsOptional()
+  price: number // ราคาหุ้น
+
+  @IsOptional()
+  share: number // จำนวนหุ้น
+
+  @IsOptional()
+  @Type(() => DividendRequest)
+  @ValidateNested()
+  dividend: DividendRequest
+
+  @IsOptional()
+  customType: string
+}
+
+export class UpdateStocksRequest extends PartialType(CreateStocksRequest) {
+  @IsNotEmpty()
+  _id: string
+}
