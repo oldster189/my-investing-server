@@ -21,7 +21,12 @@ export class ExchangesService {
   }
 
   async create(createRequest: CreateExchangeRequest): Promise<ExchangeResponse> {
-    const newItem = await new this.exchangeModel(createRequest).save()
+    const { orderId } = createRequest
+    let newCreateRequest = createRequest
+    if (!orderId) {
+      newCreateRequest = { ...newCreateRequest, orderId: String(new Date().getTime()) }
+    }
+    const newItem = await new this.exchangeModel(newCreateRequest).save()
     return this.get(String(newItem._id))
   }
 

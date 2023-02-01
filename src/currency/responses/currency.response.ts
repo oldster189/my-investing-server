@@ -2,6 +2,9 @@ import { Expose, Type } from 'class-transformer'
 
 export class CurrencyResponse {
   @Expose()
+  _id: string
+
+  @Expose()
   name: string
 
   @Expose()

@@ -3,6 +3,9 @@ import { StocksResponse } from 'src/stocks/responses/stocks.response'
 
 export class TransactionResponse {
   @Expose()
+  _id: string
+
+  @Expose()
   portfolioId: string
 
   @Expose()

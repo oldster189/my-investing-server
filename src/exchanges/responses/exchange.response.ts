@@ -3,6 +3,9 @@ import { CurrencyResponse } from 'src/currency/responses/currency.response'
 
 export class ExchangeResponse {
   @Expose()
+  _id: string
+
+  @Expose()
   orderId: string
 
   @Expose()
