@@ -26,7 +26,7 @@ export class CreateExchangeRequest {
   @ValidateNested()
   to: UpdateCurrencyRequest
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(TransactionStatus)
   status: string
 

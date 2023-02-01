@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import dayjs from 'dayjs'
 import { Model, Types } from 'mongoose'
+import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { modelMapper } from 'src/utils/mapper.util'
 import { CreateExchangeRequest, UpdateExchangeRequest } from './requests/create-exchange.request'
 import { ExchangeResponse, ExchangeListResponse } from './responses/exchange.response'
@@ -30,6 +31,8 @@ export class ExchangesService {
     if (!dateOfOrder) {
       newCreateRequest = { ...newCreateRequest, dateOfOrder: dayjs().toDate() }
     }
+    newCreateRequest.status = TransactionStatus.SUCCESS
+
     const newItem = await new this.exchangeModel(newCreateRequest).save()
     return this.get(String(newItem._id))
   }
