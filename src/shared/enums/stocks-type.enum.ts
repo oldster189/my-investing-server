@@ -3,4 +3,4 @@ enum StocksType {
   ETF = 'etf',
 }
 
-export { StocksType };
+export { StocksType }
