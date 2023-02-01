@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import dayjs from 'dayjs'
 import { Model, Types } from 'mongoose'
 import { modelMapper } from 'src/utils/mapper.util'
 import { CreateExchangeRequest, UpdateExchangeRequest } from './requests/create-exchange.request'
@@ -21,10 +22,13 @@ export class ExchangesService {
   }
 
   async create(createRequest: CreateExchangeRequest): Promise<ExchangeResponse> {
-    const { orderId } = createRequest
+    const { orderId, dateOfOrder } = createRequest
     let newCreateRequest = createRequest
     if (!orderId) {
       newCreateRequest = { ...newCreateRequest, orderId: String(new Date().getTime()) }
+    }
+    if (!dateOfOrder) {
+      newCreateRequest = { ...newCreateRequest, dateOfOrder: dayjs().toDate() }
     }
     const newItem = await new this.exchangeModel(newCreateRequest).save()
     return this.get(String(newItem._id))

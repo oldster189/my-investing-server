@@ -5,4 +5,4 @@ enum TransactionStatus {
   CANCEL = 'cancel',
 }
 
-export { TransactionStatus };
+export { TransactionStatus }

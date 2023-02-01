@@ -30,7 +30,7 @@ export class CreateExchangeRequest {
   @IsEnum(TransactionStatus)
   status: string
 
-  @IsNotEmpty()
+  @IsOptional()
   dateOfOrder: Date
 }
 
