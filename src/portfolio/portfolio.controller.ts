@@ -27,7 +27,7 @@ export class PortfolioController {
     return this.portfolioService.update(updateRequest)
   }
 
-  @Delete()
+  @Delete(':id')
   delete(@Param('id') id: string): Promise<PortfolioResponse> {
     return this.portfolioService.delete(id)
   }

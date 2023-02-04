@@ -27,7 +27,7 @@ export class CurrencyController {
     return this.currencyService.update(updateRequest)
   }
 
-  @Delete()
+  @Delete(':id')
   delete(@Param('id') id: string): Promise<CurrencyResponse> {
     return this.currencyService.delete(id)
   }

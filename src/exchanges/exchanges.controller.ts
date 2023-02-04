@@ -27,7 +27,7 @@ export class ExchangesController {
     return this.exchangesService.update(updateRequest)
   }
 
-  @Delete()
+  @Delete(':id')
   delete(@Param('id') id: string): Promise<ExchangeResponse> {
     return this.exchangesService.delete(id)
   }

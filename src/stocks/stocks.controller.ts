@@ -37,7 +37,7 @@ export class StocksController {
     return this.stocksService.update(updateRequest)
   }
 
-  @Delete()
+  @Delete(':id')
   delete(@Param('id') id: string): Promise<StocksResponse> {
     return this.stocksService.delete(id)
   }

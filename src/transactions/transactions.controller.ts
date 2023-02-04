@@ -27,7 +27,7 @@ export class TransactionsController {
     return this.transactionsService.update(updateRequest)
   }
 
-  @Delete()
+  @Delete(':id')
   delete(@Param('id') id: string): Promise<TransactionResponse> {
     return this.transactionsService.delete(id)
   }
