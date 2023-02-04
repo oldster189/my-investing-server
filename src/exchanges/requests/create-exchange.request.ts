@@ -10,7 +10,7 @@ export class CreateExchangeRequest {
   orderId: string
 
   @IsNotEmpty()
-  portfolioId: string
+  dbname: string
 
   @IsNotEmpty()
   @IsEnum(TransactionType)

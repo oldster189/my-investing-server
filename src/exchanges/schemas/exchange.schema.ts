@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose'
+import { HydratedDocument } from 'mongoose'
 import { Currency, CurrencySchema } from 'src/currency/schemas/currency.schema'
 import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { TransactionType } from 'src/shared/enums/transaction-type.enum'
@@ -11,12 +11,8 @@ export class Exchange {
   @Prop({ required: true, unique: true })
   orderId: string
 
-  @Prop({
-    required: true,
-    type: MongooseSchema.Types.ObjectId,
-    ref: 'Portfolio',
-  })
-  portfolioId: Types.ObjectId
+  @Prop({ required: true })
+  dbname: string
 
   // Sell or Buy
   @Prop({ enum: TransactionType })
