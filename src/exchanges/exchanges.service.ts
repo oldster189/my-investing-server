@@ -18,7 +18,7 @@ export class ExchangesService {
   }
 
   async getAll(): Promise<ExchangeResponse[]> {
-    const list = await this.exchangeModel.find()
+    const list = await this.exchangeModel.find().sort({ dateOfOrder: 1 })
     return modelMapper(ExchangeListResponse, { data: list }).data
   }
 
