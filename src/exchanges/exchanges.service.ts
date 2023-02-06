@@ -48,4 +48,8 @@ export class ExchangesService {
     await this.exchangeModel.deleteOne({ _id: new Types.ObjectId(id) })
     return item
   }
+
+  async deleteAll(): Promise<void> {
+    await this.exchangeModel.deleteMany()
+  }
 }

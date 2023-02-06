@@ -27,6 +27,11 @@ export class ExchangesController {
     return this.exchangesService.update(updateRequest)
   }
 
+  @Delete('all')
+  deleteAll(): Promise<void> {
+    return this.exchangesService.deleteAll()
+  }
+
   @Delete(':id')
   delete(@Param('id') id: string): Promise<ExchangeResponse> {
     return this.exchangesService.delete(id)
