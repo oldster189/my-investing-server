@@ -19,7 +19,6 @@ export class ExchangesService {
 
   async getAll(): Promise<ExchangeResponse[]> {
     const list = await this.exchangeModel.find().sort({ dateOfOrder: -1, createdAt: -1 })
-    console.log(list)
     return modelMapper(ExchangeListResponse, { data: list }).data
   }
 

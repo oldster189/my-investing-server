@@ -24,6 +24,12 @@ export class Transaction {
   @Prop()
   amount: number // จำนวนเงิน ที่ทำรายการ
 
+  @Prop()
+  commission: number
+
+  @Prop()
+  vat: number
+
   @Prop({ enum: TransactionStatus })
   status: string
 

@@ -15,7 +15,7 @@ export class Currency {
   symbol: string
 
   @Prop()
-  rate: string
+  rate: number
 
   @Prop()
   abbreviation: string

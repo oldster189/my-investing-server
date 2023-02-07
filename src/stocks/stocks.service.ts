@@ -48,6 +48,8 @@ export class StocksService {
       const htmlTableCloseTag = '</table>'
       const contentStockInfo = contents.split(htmlTableCloseTag)[0]
       const trTags = contentStockInfo.split('<tr><td')
+      const exchange = trTags[1].split('[')[1].split(']')[0]
+
       const companyTags = trTags[2].split('rel="nofollow"><b>')
       const company = companyTags[1].split('</b>')[0]
 
@@ -57,9 +59,9 @@ export class StocksService {
       const sector = itemTags[0].split('</a>')[0]
       const industry = itemTags[1].split('</a>')[0]
       const country = itemTags[2].split('</a>')[0]
-      return { symbol: symbol.toUpperCase(), company, sector, industry, country }
+      return { symbol: symbol.toUpperCase(), company, sector, industry, country, exchange }
     } catch (error) {
-      return { symbol, company: '', sector: '', industry: '', country: '' }
+      return { symbol, company: '', sector: '', industry: '', country: '', exchange: '' }
     }
   }
 

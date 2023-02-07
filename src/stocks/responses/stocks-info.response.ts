@@ -15,4 +15,7 @@ export class StockInfo {
 
   @Expose()
   country: string
+
+  @Expose()
+  exchange: string
 }
