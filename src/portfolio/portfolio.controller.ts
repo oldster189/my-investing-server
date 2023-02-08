@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { PortfolioService } from './portfolio.service'
+import { AddStockPortfolioRequest } from './requests/add-stock-portfolio.request'
 import { CreatePortfolioRequest, UpdatePortfolioRequest } from './requests/create-portfolio.request'
 import { PortfolioResponse } from './responses/portfolio.response'
 
@@ -15,6 +16,11 @@ export class PortfolioController {
   @Get(':id')
   get(@Param('id') id: string): Promise<PortfolioResponse> {
     return this.portfolioService.get(id)
+  }
+
+  @Post('add/stock')
+  addStock(@Body() createRequest: AddStockPortfolioRequest): Promise<PortfolioResponse> {
+    return this.portfolioService.addStock(createRequest)
   }
 
   @Post()

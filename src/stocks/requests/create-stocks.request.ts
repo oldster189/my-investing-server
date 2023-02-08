@@ -22,10 +22,10 @@ export class CreateStocksRequest {
   industry: string
 
   @IsOptional()
-  exchange: string
+  country: string
 
   @IsOptional()
-  country: string
+  exchange: string
 
   @IsOptional()
   price: number // ราคาหุ้น
@@ -43,6 +43,6 @@ export class CreateStocksRequest {
 }
 
 export class UpdateStocksRequest extends PartialType(CreateStocksRequest) {
-  @IsNotEmpty()
+  @IsOptional()
   _id: string
 }

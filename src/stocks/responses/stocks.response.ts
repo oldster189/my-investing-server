@@ -1,4 +1,5 @@
 import { Expose, Type } from 'class-transformer'
+import { CustomStocksType } from 'src/shared/enums/custom-stocks-type.enum'
 import { DividendResponse } from './dividen.response'
 
 export class StocksResponse {
@@ -37,7 +38,7 @@ export class StocksResponse {
   dividend: DividendResponse
 
   @Expose()
-  customType: string
+  customType: CustomStocksType
 }
 
 export class StocksListResponse {

@@ -3,7 +3,7 @@ import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose'
 
 export type PortfolioDocument = HydratedDocument<Portfolio>
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Portfolio {
   @Prop({ required: true, unique: true })
   dbname: string
@@ -12,7 +12,6 @@ export class Portfolio {
   name: string
 
   @Prop({
-    required: true,
     type: [MongooseSchema.Types.ObjectId],
     ref: 'Stocks',
   })

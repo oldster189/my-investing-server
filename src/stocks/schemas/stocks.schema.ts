@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument } from 'mongoose'
+import { CustomStocksType } from 'src/shared/enums/custom-stocks-type.enum'
 import { StocksType } from 'src/shared/enums/stocks-type.enum'
 import { Dividend, DividendSchema } from './dividend.schema'
 
@@ -14,7 +15,7 @@ export class Stocks {
   company: string
 
   // common / etf
-  @Prop({ enum: StocksType })
+  @Prop({ enum: StocksType, default: StocksType.COMMON })
   type: string
 
   @Prop()
@@ -38,7 +39,7 @@ export class Stocks {
   @Prop({ type: DividendSchema })
   dividend: Dividend
 
-  @Prop()
+  @Prop({ enum: CustomStocksType })
   customType: string
 }
 

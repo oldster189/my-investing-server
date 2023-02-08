@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
+import { CreateStocksRequest } from 'src/stocks/requests/create-stocks.request'
 import { Stocks, StocksDocument } from 'src/stocks/schemas/stocks.schema'
+import { StocksService } from 'src/stocks/stocks.service'
 import { modelMapper } from 'src/utils/mapper.util'
 import { AddStockPortfolioRequest } from './requests/add-stock-portfolio.request'
 import { CreatePortfolioRequest, UpdatePortfolioRequest } from './requests/create-portfolio.request'
@@ -13,6 +15,7 @@ export class PortfolioService {
   constructor(
     @InjectModel(Portfolio.name) private readonly portfolioModel: Model<PortfolioDocument>,
     @InjectModel(Stocks.name) private readonly stocksModel: Model<StocksDocument>,
+    private stocksService: StocksService,
   ) {}
 
   async get(id: string): Promise<PortfolioResponse> {
@@ -21,7 +24,10 @@ export class PortfolioService {
   }
 
   async getAll(): Promise<PortfolioResponse[]> {
-    const list = await this.portfolioModel.find().populate('stocks', '', this.stocksModel)
+    const list = await this.portfolioModel.find().populate({
+      path: 'stocks',
+      model: this.stocksModel,
+    })
     return modelMapper(PortfolioListResponse, { data: list }).data
   }
 
@@ -36,9 +42,23 @@ export class PortfolioService {
     return this.get(_id)
   }
 
-  async add(addRequest: AddStockPortfolioRequest): Promise<PortfolioResponse> {
+  async addStock(addRequest: AddStockPortfolioRequest): Promise<PortfolioResponse> {
     const { _id, stock } = addRequest
-    await this.portfolioModel.updateOne({ _id: new Types.ObjectId(_id) }, { $push: { stocksIds: stock._id } })
+    const { symbol } = stock
+    let newStock = await this.stocksService.get(symbol)
+    if (!newStock) {
+      newStock = await this.stocksService.create(stock)
+    }
+
+    const portfolio = await this.portfolioModel.findById(_id)
+    const { stocksIds } = portfolio
+    const isExist = stocksIds.find((id) => String(id) === String(newStock._id))
+    if (isExist) throw new BadRequestException('Stock is exist in portfolio')
+
+    await this.portfolioModel.updateOne(
+      { _id: new Types.ObjectId(_id), arrayfileds: { $not: { $elemMatch: { symbol } } } },
+      { $push: { stocksIds: newStock._id } },
+    )
 
     return this.get(_id)
   }

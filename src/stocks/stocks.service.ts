@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import axios from 'axios'
 import { Model, Types } from 'mongoose'
@@ -13,8 +13,13 @@ import { Stocks, StocksDocument } from './schemas/stocks.schema'
 export class StocksService {
   constructor(@InjectModel(Stocks.name) private readonly stocksModel: Model<StocksDocument>) {}
 
-  async get(id: string): Promise<StocksResponse> {
-    const item = await this.stocksModel.findById(id)
+  async isExist(symbol: string): Promise<boolean> {
+    const item = await this.stocksModel.findOne({ symbol })
+    return !!item
+  }
+
+  async get(symbol: string): Promise<StocksResponse> {
+    const item = await this.stocksModel.findOne({ symbol })
     return modelMapper(StocksResponse, item)
   }
 
@@ -48,7 +53,10 @@ export class StocksService {
       const htmlTableCloseTag = '</table>'
       const contentStockInfo = contents.split(htmlTableCloseTag)[0]
       const trTags = contentStockInfo.split('<tr><td')
-      const exchange = trTags[1].split('[')[1].split(']')[0]
+      let exchange = trTags[1].split('[')[1].split(']')[0]
+      if (exchange === 'NASD') {
+        exchange = 'NASDAQ'
+      }
 
       const companyTags = trTags[2].split('rel="nofollow"><b>')
       const company = companyTags[1].split('</b>')[0]

@@ -12,6 +12,7 @@ export class PortfolioResponse {
   name: string
 
   @Expose()
+  @Type(() => StocksResponse)
   stocks: StocksResponse[]
 
   @Expose()
