@@ -9,7 +9,7 @@ import { WatchListResponse, WatchListListResponse } from './responses/watch-list
 import { WatchList, WatchListDocument } from './schemas/watch-list.schema'
 
 @Injectable()
-export class WatchListService {
+export class WatchListsService {
   constructor(
     @InjectModel(WatchList.name) private readonly watchListModel: Model<WatchListDocument>,
     @InjectModel(Stocks.name) private readonly stocksModel: Model<StocksDocument>,

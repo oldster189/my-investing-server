@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Stocks, StocksSchema } from 'src/stocks/schemas/stocks.schema'
 import { StocksModule } from 'src/stocks/stocks.module'
-import { PortfolioController } from './portfolio.controller'
-import { PortfolioService } from './portfolio.service'
+import { PortfoliosController } from './portfolios.controller'
+import { PortfoliosService } from './portfolios.service'
 import { Portfolio, PortfolioSchema } from './schemas/portfolio.schema'
 
 @Module({
@@ -14,8 +14,8 @@ import { Portfolio, PortfolioSchema } from './schemas/portfolio.schema'
     ]),
     StocksModule,
   ],
-  controllers: [PortfolioController],
-  providers: [PortfolioService],
-  exports: [PortfolioService],
+  controllers: [PortfoliosController],
+  providers: [PortfoliosService],
+  exports: [PortfoliosService],
 })
-export class PortfolioModule {}
+export class PortfoliosModule {}

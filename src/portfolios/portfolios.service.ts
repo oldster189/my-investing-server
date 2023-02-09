@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
-import { CreateStocksRequest } from 'src/stocks/requests/create-stocks.request'
 import { Stocks, StocksDocument } from 'src/stocks/schemas/stocks.schema'
 import { StocksService } from 'src/stocks/stocks.service'
 import { modelMapper } from 'src/utils/mapper.util'
@@ -11,7 +10,7 @@ import { PortfolioListResponse, PortfolioResponse } from './responses/portfolio.
 import { Portfolio, PortfolioDocument } from './schemas/portfolio.schema'
 
 @Injectable()
-export class PortfolioService {
+export class PortfoliosService {
   constructor(
     @InjectModel(Portfolio.name) private readonly portfolioModel: Model<PortfolioDocument>,
     @InjectModel(Stocks.name) private readonly stocksModel: Model<StocksDocument>,

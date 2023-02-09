@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Stocks, StocksSchema } from 'src/stocks/schemas/stocks.schema'
 import { WatchList, WatchListSchema } from './schemas/watch-list.schema'
-import { WatchListController } from './watch-list.controller'
-import { WatchListService } from './watch-list.service'
+import { WatchListsController } from './watch-lists.controller'
+import { WatchListsService } from './watch-lists.service'
 
 @Module({
   imports: [
@@ -12,8 +12,8 @@ import { WatchListService } from './watch-list.service'
       { name: Stocks.name, schema: StocksSchema },
     ]),
   ],
-  controllers: [WatchListController],
-  providers: [WatchListService],
-  exports: [WatchListService],
+  controllers: [WatchListsController],
+  providers: [WatchListsService],
+  exports: [WatchListsService],
 })
-export class WatchListModule {}
+export class WatchListsModule {}

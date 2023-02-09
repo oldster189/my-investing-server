@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer'
-import { CurrencyResponse } from 'src/currency/responses/currency.response'
+import { CurrencyResponse } from 'src/currencies/responses/currency.response'
 
 export class ExchangeResponse {
   @Expose()

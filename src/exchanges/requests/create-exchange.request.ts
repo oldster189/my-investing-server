@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { IsEnum, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
-import { UpdateCurrencyRequest } from 'src/currency/requests/create-currency.request'
+import { UpdateCurrencyRequest } from 'src/currencies/requests/create-currency.request'
 import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { TransactionType } from 'src/shared/enums/transaction-type.enum'
 

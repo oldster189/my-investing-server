@@ -2,39 +2,39 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { AddStockWatchListRequest } from './requests/add-stock-watch-list.request'
 import { CreateWatchListRequest, UpdateWatchListRequest } from './requests/create-watch-list.request'
 import { WatchListResponse } from './responses/watch-list.response'
-import { WatchListService } from './watch-list.service'
+import { WatchListsService } from './watch-lists.service'
 
-@Controller('watch-list')
-export class WatchListController {
-  constructor(private readonly watchListService: WatchListService) {}
+@Controller('watch-lists')
+export class WatchListsController {
+  constructor(private readonly watchListsService: WatchListsService) {}
 
   @Get('list')
   getAll(): Promise<WatchListResponse[]> {
-    return this.watchListService.getAll()
+    return this.watchListsService.getAll()
   }
 
   @Get(':id')
   get(@Param('id') id: string): Promise<WatchListResponse> {
-    return this.watchListService.get(id)
+    return this.watchListsService.get(id)
   }
 
   @Post()
   create(@Body() createRequest: CreateWatchListRequest): Promise<WatchListResponse> {
-    return this.watchListService.create(createRequest)
+    return this.watchListsService.create(createRequest)
   }
 
   @Put('add')
   add(@Body() addRequest: AddStockWatchListRequest): Promise<WatchListResponse> {
-    return this.watchListService.add(addRequest)
+    return this.watchListsService.add(addRequest)
   }
 
   @Put()
   update(@Body() updateRequest: UpdateWatchListRequest): Promise<WatchListResponse> {
-    return this.watchListService.update(updateRequest)
+    return this.watchListsService.update(updateRequest)
   }
 
   @Delete(':id')
   delete(@Param('id') id: string): Promise<WatchListResponse> {
-    return this.watchListService.delete(id)
+    return this.watchListsService.delete(id)
   }
 }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose'
-import { Currency, CurrencySchema } from 'src/currency/schemas/currency.schema'
+import { Currency, CurrencySchema } from 'src/currencies/schemas/currency.schema'
 import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { TransactionType } from 'src/shared/enums/transaction-type.enum'
 import { Stocks, StocksSchema } from 'src/stocks/schemas/stocks.schema'

@@ -1,34 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
-import { CurrencyService } from './currency.service'
+import { CurrenciesService } from './currencies.service'
 import { CreateCurrencyRequest, UpdateCurrencyRequest } from './requests/create-currency.request'
 import { CurrencyResponse } from './responses/currency.response'
 
-@Controller('currency')
-export class CurrencyController {
-  constructor(private readonly currencyService: CurrencyService) {}
+@Controller('currencies')
+export class CurrenciesController {
+  constructor(private readonly currenciesService: CurrenciesService) {}
 
   @Get('list')
   getAll(): Promise<CurrencyResponse[]> {
-    return this.currencyService.getAll()
+    return this.currenciesService.getAll()
   }
 
   @Get(':id')
   get(@Param('id') id: string): Promise<CurrencyResponse> {
-    return this.currencyService.get(id)
+    return this.currenciesService.get(id)
   }
 
   @Post()
   create(@Body() createRequest: CreateCurrencyRequest): Promise<CurrencyResponse> {
-    return this.currencyService.create(createRequest)
+    return this.currenciesService.create(createRequest)
   }
 
   @Put()
   update(@Body() updateRequest: UpdateCurrencyRequest): Promise<CurrencyResponse> {
-    return this.currencyService.update(updateRequest)
+    return this.currenciesService.update(updateRequest)
   }
 
   @Delete(':id')
   delete(@Param('id') id: string): Promise<CurrencyResponse> {
-    return this.currencyService.delete(id)
+    return this.currenciesService.delete(id)
   }
 }

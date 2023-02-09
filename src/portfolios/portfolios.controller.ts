@@ -1,40 +1,40 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
-import { PortfolioService } from './portfolio.service'
+import { PortfoliosService } from './portfolios.service'
 import { AddStockPortfolioRequest } from './requests/add-stock-portfolio.request'
 import { CreatePortfolioRequest, UpdatePortfolioRequest } from './requests/create-portfolio.request'
 import { PortfolioResponse } from './responses/portfolio.response'
 
-@Controller('portfolio')
-export class PortfolioController {
-  constructor(private readonly portfolioService: PortfolioService) {}
+@Controller('portfolios')
+export class PortfoliosController {
+  constructor(private readonly portfoliosService: PortfoliosService) {}
 
   @Get('list')
   getAll(): Promise<PortfolioResponse[]> {
-    return this.portfolioService.getAll()
+    return this.portfoliosService.getAll()
   }
 
   @Get(':id')
   get(@Param('id') id: string): Promise<PortfolioResponse> {
-    return this.portfolioService.get(id)
+    return this.portfoliosService.get(id)
   }
 
   @Post('add/stock')
   addStock(@Body() createRequest: AddStockPortfolioRequest): Promise<PortfolioResponse> {
-    return this.portfolioService.addStock(createRequest)
+    return this.portfoliosService.addStock(createRequest)
   }
 
   @Post()
   create(@Body() createRequest: CreatePortfolioRequest): Promise<PortfolioResponse> {
-    return this.portfolioService.create(createRequest)
+    return this.portfoliosService.create(createRequest)
   }
 
   @Put()
   update(@Body() updateRequest: UpdatePortfolioRequest): Promise<PortfolioResponse> {
-    return this.portfolioService.update(updateRequest)
+    return this.portfoliosService.update(updateRequest)
   }
 
   @Delete(':id')
   delete(@Param('id') id: string): Promise<PortfolioResponse> {
-    return this.portfolioService.delete(id)
+    return this.portfoliosService.delete(id)
   }
 }

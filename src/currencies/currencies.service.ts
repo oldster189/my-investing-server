@@ -7,7 +7,7 @@ import { CurrencyResponse, CurrencyListResponse } from './responses/currency.res
 import { Currency, CurrencyDocument } from './schemas/currency.schema'
 
 @Injectable()
-export class CurrencyService {
+export class CurrenciesService {
   constructor(@InjectModel(Currency.name) private readonly currencyModel: Model<CurrencyDocument>) {}
 
   async get(id: string): Promise<CurrencyResponse> {
