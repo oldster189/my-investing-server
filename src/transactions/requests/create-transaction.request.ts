@@ -1,6 +1,8 @@
 import { PartialType } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
-import { IsEnum, IsNotEmpty, ValidateNested } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
+import { UpdateCurrencyRequest } from 'src/currency/requests/create-currency.request'
+import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { TransactionType } from 'src/shared/enums/transaction-type.enum'
 import { UpdateStocksRequest } from 'src/stocks/requests/create-stocks.request'
 
@@ -18,7 +20,22 @@ export class CreateTransactionRequest {
   stocks: UpdateStocksRequest
 
   @IsNotEmpty()
-  amount: number // จำนวนเงิน ที่ทำรายการ
+  @Type(() => UpdateStocksRequest)
+  @ValidateNested()
+  payments: UpdateCurrencyRequest[] // จำนวนเงิน ที่ทำรายการ
+
+  @IsOptional()
+  commission: number
+
+  @IsOptional()
+  tax: number
+
+  @IsNotEmpty()
+  totalAmount: number
+
+  @IsOptional()
+  @IsEnum(TransactionStatus)
+  status: string
 
   @IsNotEmpty()
   dateOfOrder: Date

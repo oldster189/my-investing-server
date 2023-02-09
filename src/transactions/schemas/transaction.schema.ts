@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose'
+import { Currency, CurrencySchema } from 'src/currency/schemas/currency.schema'
 import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { TransactionType } from 'src/shared/enums/transaction-type.enum'
 import { Stocks, StocksSchema } from 'src/stocks/schemas/stocks.schema'
@@ -15,20 +16,23 @@ export class Transaction {
   })
   portfolioId: Types.ObjectId
 
-  @Prop({ enum: TransactionType })
+  @Prop({ enum: TransactionType, default: TransactionType.BUY })
   type: string // Sell or Buy
 
   @Prop({ type: StocksSchema })
   stocks: Stocks
 
-  @Prop()
-  amount: number // จำนวนเงิน ที่ทำรายการ
+  @Prop({ type: [CurrencySchema] })
+  payments: Currency[] // จำนวนเงิน ที่ทำรายการ
 
   @Prop()
-  commission: number
+  commission: number // ค่าคอมมิชชัน ค่าบริการ
 
   @Prop()
-  vat: number
+  tax: number // ภาษี
+
+  @Prop()
+  totalAmount: number
 
   @Prop({ enum: TransactionStatus })
   status: string
