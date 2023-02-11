@@ -7,6 +7,11 @@ import { CurrencyResponse } from './responses/currency.response'
 export class CurrenciesController {
   constructor(private readonly currenciesService: CurrenciesService) {}
 
+  @Get('exchange-rate')
+  getExchangeRate(): Promise<any> {
+    return this.currenciesService.getExchangeRate()
+  }
+
   @Get('list')
   getAll(): Promise<CurrencyResponse[]> {
     return this.currenciesService.getAll()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 import { Model, Types } from 'mongoose'
 import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { modelMapper } from 'src/utils/mapper.util'
