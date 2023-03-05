@@ -40,6 +40,9 @@ export class CreateStocksRequest {
 
   @IsOptional()
   customType: string
+
+  @IsOptional()
+  logoid: string
 }
 
 export class UpdateStocksRequest extends PartialType(CreateStocksRequest) {

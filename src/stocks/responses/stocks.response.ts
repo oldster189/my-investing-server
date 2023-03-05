@@ -39,6 +39,9 @@ export class StocksResponse {
 
   @Expose()
   customType: CustomStocksType
+
+  @Expose()
+  logoid: string
 }
 
 export class StocksListResponse {

@@ -34,12 +34,27 @@ export class StocksService {
   }
 
   async create(createRequest: CreateStocksRequest): Promise<StocksResponse> {
-    const newItem = await new this.stocksModel(createRequest).save()
+    const { symbol } = createRequest
+    const { sector, industry, country } = await this.getStockInfo(symbol)
+    const logoid = await this.getLogoId(symbol)
+    const newCreateRequest = { ...createRequest, sector, industry, country, logoid }
+
+    const newItem = await new this.stocksModel(newCreateRequest).save()
     return this.get(String(newItem._id))
   }
 
   async createList(createRequests: CreateStocksRequest[]): Promise<StocksResponse[]> {
-    const newItems = await this.stocksModel.insertMany(createRequests)
+    const newCreateRequests = []
+    for (let index = 0; index < createRequests.length; index++) {
+      const createRequest = createRequests[index]
+      const { symbol } = createRequest
+      const { sector, industry, country } = await this.getStockInfo(symbol)
+      const logoid = await this.getLogoId(symbol)
+      const newCreateRequest = { ...createRequest, sector, industry, country, logoid }
+      newCreateRequests.push(newCreateRequest)
+    }
+
+    const newItems = await this.stocksModel.insertMany(newCreateRequests)
     const symbols = newItems.map((stock) => stock.symbol)
     return this.getBySymbols(symbols)
   }
@@ -54,6 +69,10 @@ export class StocksService {
     const item = await this.get(id)
     await this.stocksModel.deleteOne({ _id: new Types.ObjectId(id) })
     return item
+  }
+
+  async deleteAll(): Promise<void> {
+    // await this.stocksModel.deleteMany()
   }
 
   async getStockInfo(symbol: string): Promise<StockInfo> {
@@ -93,6 +112,20 @@ export class StocksService {
         exchange: stock.exchange,
       }))
       return newData
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getLogoId(symbol: string): Promise<string> {
+    try {
+      const { data: response } = await axios.get(
+        `https://symbol-search.tradingview.com/symbol_search/v3/?text=${symbol}`,
+      )
+      const stock = response.symbols[0]
+      console.log(stock)
+
+      return stock.logoid
     } catch (error) {
       throw error
     }

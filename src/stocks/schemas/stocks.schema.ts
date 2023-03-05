@@ -41,6 +41,9 @@ export class Stocks {
 
   @Prop({ enum: CustomStocksType })
   customType: string
+
+  @Prop()
+  logoid: string
 }
 
 export const StocksSchema = SchemaFactory.createForClass(Stocks)

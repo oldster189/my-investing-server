@@ -37,6 +37,11 @@ export class StocksController {
     return this.stocksService.update(updateRequest)
   }
 
+  @Delete('all')
+  deleteAll(): Promise<void> {
+    return this.stocksService.deleteAll()
+  }
+
   @Delete(':id')
   delete(@Param('id') id: string): Promise<StocksResponse> {
     return this.stocksService.delete(id)
