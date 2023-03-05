@@ -48,9 +48,9 @@ export class StocksService {
     for (let index = 0; index < createRequests.length; index++) {
       const createRequest = createRequests[index]
       const { symbol } = createRequest
-      const { sector, industry, country } = await this.getStockInfo(symbol)
+      const { sector, industry, country, exchange } = await this.getStockInfo(symbol)
       const logoid = await this.getLogoId(symbol)
-      const newCreateRequest = { ...createRequest, sector, industry, country, logoid }
+      const newCreateRequest = { ...createRequest, sector, industry, country, logoid, exchange }
       newCreateRequests.push(newCreateRequest)
     }
 
@@ -72,7 +72,7 @@ export class StocksService {
   }
 
   async deleteAll(): Promise<void> {
-    // await this.stocksModel.deleteMany()
+    await this.stocksModel.deleteMany()
   }
 
   async getStockInfo(symbol: string): Promise<StockInfo> {
@@ -123,8 +123,6 @@ export class StocksService {
         `https://symbol-search.tradingview.com/symbol_search/v3/?text=${symbol}`,
       )
       const stock = response.symbols[0]
-      console.log(stock)
-
       return stock.logoid
     } catch (error) {
       throw error
