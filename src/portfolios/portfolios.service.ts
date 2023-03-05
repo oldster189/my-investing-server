@@ -42,22 +42,26 @@ export class PortfoliosService {
   }
 
   async addStock(addRequest: AddStockPortfolioRequest): Promise<PortfolioResponse> {
-    const { _id, stock } = addRequest
-    const { symbol } = stock
-    let newStock = await this.stocksService.get(symbol)
-    if (!newStock) {
-      newStock = await this.stocksService.create(stock)
+    const { _id, stocks } = addRequest
+    const symbols = stocks.map((stock) => stock.symbol)
+    const stockBySymbols = await this.stocksService.getBySymbols(symbols)
+    const createStockIds = symbols.filter((symbol) => stockBySymbols.some((stock) => stock.symbol !== symbol))
+
+    let newStocksIds = stockBySymbols.map((stock) => stock._id)
+    if (createStockIds.length > 0) {
+      const createStocks = stocks.filter((stock) => createStockIds.some((symbol) => symbol === stock.symbol))
+      const newStocks = await this.stocksService.createList(createStocks)
+      newStocksIds = [...newStocksIds, ...newStocks.map((stock) => stock._id)]
     }
 
     const portfolio = await this.portfolioModel.findById(_id)
     const { stocksIds } = portfolio
-    const isExist = stocksIds.find((id) => String(id) === String(newStock._id))
-    if (isExist) throw new BadRequestException('Stock is exist in portfolio')
+    newStocksIds = stocksIds
+      .filter((id) => newStocksIds.some((_id) => String(_id) !== String(id)))
+      .map((id) => String(id))
+    if (newStocksIds.length === 0) throw new BadRequestException('Stock is exist in portfolio')
 
-    await this.portfolioModel.updateOne(
-      { _id: new Types.ObjectId(_id), arrayfileds: { $not: { $elemMatch: { symbol } } } },
-      { $push: { stocksIds: newStock._id } },
-    )
+    await this.portfolioModel.updateOne({ _id: new Types.ObjectId(_id) }, { $push: { stocksIds: newStocksIds } })
 
     return this.get(_id)
   }

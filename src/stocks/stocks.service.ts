@@ -23,6 +23,11 @@ export class StocksService {
     return modelMapper(StocksResponse, item)
   }
 
+  async getBySymbols(symbols: string[]): Promise<StocksResponse[]> {
+    const list = await this.stocksModel.find({ symbol: { $in: symbols } })
+    return modelMapper(StocksListResponse, { data: list }).data
+  }
+
   async getAll(): Promise<StocksResponse[]> {
     const list = await this.stocksModel.find()
     return modelMapper(StocksListResponse, { data: list }).data
@@ -31,6 +36,12 @@ export class StocksService {
   async create(createRequest: CreateStocksRequest): Promise<StocksResponse> {
     const newItem = await new this.stocksModel(createRequest).save()
     return this.get(String(newItem._id))
+  }
+
+  async createList(createRequests: CreateStocksRequest[]): Promise<StocksResponse[]> {
+    const newItems = await this.stocksModel.insertMany(createRequests)
+    const symbols = newItems.map((stock) => stock.symbol)
+    return this.getBySymbols(symbols)
   }
 
   async update(updateRequest: UpdateStocksRequest): Promise<StocksResponse> {

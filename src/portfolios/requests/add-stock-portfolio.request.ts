@@ -9,5 +9,5 @@ export class AddStockPortfolioRequest {
   @IsNotEmpty()
   @Type(() => CreateStocksRequest)
   @ValidateNested()
-  stock: CreateStocksRequest
+  stocks: CreateStocksRequest[]
 }
