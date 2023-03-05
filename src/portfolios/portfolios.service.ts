@@ -45,22 +45,22 @@ export class PortfoliosService {
     const { _id, stocks } = addRequest
     const symbols = stocks.map((stock) => stock.symbol)
     const stockBySymbols = await this.stocksService.getBySymbols(symbols)
-    const createStockIds = symbols.filter((symbol) => stockBySymbols.some((stock) => stock.symbol !== symbol))
+    const createStockIds = symbols.filter((symbol) => !stockBySymbols.some((stock) => stock.symbol === symbol))
 
     let newStocksIds = stockBySymbols.map((stock) => stock._id)
     if (createStockIds.length > 0) {
       const createStocks = stocks.filter((stock) => createStockIds.some((symbol) => symbol === stock.symbol))
       const newStocks = await this.stocksService.createList(createStocks)
+
       newStocksIds = [...newStocksIds, ...newStocks.map((stock) => stock._id)]
     }
 
     const portfolio = await this.portfolioModel.findById(_id)
     const { stocksIds } = portfolio
-    newStocksIds = stocksIds
-      .filter((id) => newStocksIds.some((_id) => String(_id) !== String(id)))
+    newStocksIds = newStocksIds
+      .filter((id) => !stocksIds.some((_id) => String(_id) === String(id)))
       .map((id) => String(id))
     if (newStocksIds.length === 0) throw new BadRequestException('Stock is exist in portfolio')
-
     await this.portfolioModel.updateOne({ _id: new Types.ObjectId(_id) }, { $push: { stocksIds: newStocksIds } })
 
     return this.get(_id)
@@ -70,5 +70,15 @@ export class PortfoliosService {
     const item = await this.get(id)
     await this.portfolioModel.deleteOne({ _id: new Types.ObjectId(id) })
     return item
+  }
+
+  async updateStock(updateRequest: UpdatePortfolioRequest): Promise<PortfolioResponse> {
+    console.log(updateRequest)
+    const { _id, stocks } = updateRequest
+    console.log(_id, stocks)
+    const newStocksIds = stocks.map((stock) => stock._id)
+    await this.portfolioModel.updateOne({ _id: new Types.ObjectId(_id) }, { $set: { stocksIds: newStocksIds } })
+
+    return this.get(_id)
   }
 }

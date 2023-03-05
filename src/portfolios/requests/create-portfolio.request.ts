@@ -1,7 +1,7 @@
 import { OmitType, PartialType } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { IsArray, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
-import { CreateStocksRequest } from 'src/stocks/requests/create-stocks.request'
+import { CreateStocksRequest, UpdateStocksRequest } from 'src/stocks/requests/create-stocks.request'
 
 export class CreatePortfolioRequest {
   @IsNotEmpty()
@@ -17,7 +17,13 @@ export class CreatePortfolioRequest {
   stocks: CreateStocksRequest[]
 }
 
-export class UpdatePortfolioRequest extends PartialType(OmitType(CreatePortfolioRequest, ['dbname'])) {
+export class UpdatePortfolioRequest extends PartialType(OmitType(CreatePortfolioRequest, ['dbname', 'stocks'])) {
   @IsNotEmpty()
   _id: string
+
+  @IsOptional()
+  @IsArray()
+  @Type(() => UpdateStocksRequest)
+  @ValidateNested()
+  stocks: UpdateStocksRequest[]
 }

@@ -33,6 +33,12 @@ export class PortfoliosController {
     return this.portfoliosService.update(updateRequest)
   }
 
+  @Put('update/stock')
+  updateStock(@Body() updateRequest: UpdatePortfolioRequest): Promise<PortfolioResponse> {
+    console.log('first')
+    return this.portfoliosService.updateStock(updateRequest)
+  }
+
   @Delete(':id')
   delete(@Param('id') id: string): Promise<PortfolioResponse> {
     return this.portfoliosService.delete(id)
