@@ -20,10 +20,10 @@ export class Transaction {
   type: string // Sell or Buy
 
   @Prop({ type: StocksSchema })
-  stocks: Stocks
+  stocks: Stocks // ราคาหุ้น ตอนซื้อ และจำนวนหุ้น
 
   @Prop({ type: [CurrencySchema] })
-  payments: Currency[] // จำนวนเงิน ที่ทำรายการ
+  payments: Currency[] // จำนวนเงิน ที่ทำรายการ thb and usd
 
   @Prop()
   commission: number // ค่าคอมมิชชัน ค่าบริการ
@@ -32,7 +32,7 @@ export class Transaction {
   tax: number // ภาษี
 
   @Prop()
-  totalAmount: number
+  totalAmount: number // รวมเงินบาท
 
   @Prop({ enum: TransactionStatus })
   status: string
