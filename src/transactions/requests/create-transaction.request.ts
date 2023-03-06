@@ -20,7 +20,7 @@ export class CreateTransactionRequest {
   stocks: UpdateStocksRequest
 
   @IsNotEmpty()
-  @Type(() => UpdateStocksRequest)
+  @Type(() => UpdateCurrencyRequest)
   @ValidateNested()
   payments: UpdateCurrencyRequest[] // จำนวนเงิน ที่ทำรายการ
 
