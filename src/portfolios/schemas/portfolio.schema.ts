@@ -5,7 +5,7 @@ export type PortfolioDocument = HydratedDocument<Portfolio>
 
 @Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Portfolio {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   dbname: string
 
   @Prop({ required: true, unique: true })

@@ -7,9 +7,9 @@ import { ExchangeResponse } from './responses/exchange.response'
 export class ExchangesController {
   constructor(private readonly exchangesService: ExchangesService) {}
 
-  @Get('list')
-  getAll(): Promise<ExchangeResponse[]> {
-    return this.exchangesService.getAll()
+  @Get('list/:portfolioId')
+  getAll(@Param('portfolioId') portfolioId: string): Promise<ExchangeResponse[]> {
+    return this.exchangesService.getAll(portfolioId)
   }
 
   @Get(':id')

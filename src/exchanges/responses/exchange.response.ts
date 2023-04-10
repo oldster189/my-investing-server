@@ -9,7 +9,7 @@ export class ExchangeResponse {
   orderId: string
 
   @Expose()
-  dbname: string
+  portfolioId: string
 
   @Expose()
   type: string

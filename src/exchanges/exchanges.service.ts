@@ -5,7 +5,7 @@ import { Model, Types } from 'mongoose'
 import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { modelMapper } from 'src/utils/mapper.util'
 import { CreateExchangeRequest, UpdateExchangeRequest } from './requests/create-exchange.request'
-import { ExchangeResponse, ExchangeListResponse } from './responses/exchange.response'
+import { ExchangeListResponse, ExchangeResponse } from './responses/exchange.response'
 import { Exchange, ExchangeDocument } from './schemas/exchange.schema'
 
 @Injectable()
@@ -17,8 +17,8 @@ export class ExchangesService {
     return modelMapper(ExchangeResponse, item)
   }
 
-  async getAll(): Promise<ExchangeResponse[]> {
-    const list = await this.exchangeModel.find().sort({ dateOfOrder: -1, createdAt: -1 })
+  async getAll(portfolioId: string): Promise<ExchangeResponse[]> {
+    const list = await this.exchangeModel.find({ portfolioId }).sort({ dateOfOrder: -1, createdAt: -1 })
     return modelMapper(ExchangeListResponse, { data: list }).data
   }
 
