@@ -28,28 +28,29 @@ interface Quote {
 interface FollowSuperInvestor {
   sa_ids: string
   ticker: string
+  company?: string
   price: number
 }
 
 const stocks: FollowSuperInvestor[] = [
-  { sa_ids: '1715', ticker: 'ASML', price: 724.75 },
-  { sa_ids: '1534', ticker: 'TSM', price: 100.92 },
-  { sa_ids: '575', ticker: 'MSFT', price: 340.54 },
-  { sa_ids: '1422', ticker: 'MRK', price: 115.38 },
-  { sa_ids: '14539', ticker: 'AVGO', price: 867.43 },
-  { sa_ids: '2182', ticker: 'DHI', price: 121.69 },
-  { sa_ids: '1032', ticker: 'PEP', price: 185.14 },
-  { sa_ids: '1212', ticker: 'CVS', price: 69.13 },
-  { sa_ids: '903', ticker: 'MA', price: 393.3 },
-  { sa_ids: '9691', ticker: 'V', price: 237.48 },
-  { sa_ids: '907', ticker: 'JPM', price: 145.44 },
-  { sa_ids: '1150', ticker: 'NVDA', price: 423.02 },
-  { sa_ids: '1719', ticker: 'UNH', price: 480.64 },
-  { sa_ids: '562', ticker: 'AMZN', price: 130.36 },
-  { sa_ids: '1135', ticker: 'JNJ', price: 165.34 },
-  { sa_ids: '146', ticker: 'AAPL', price: 164.9 },
-  { sa_ids: '544', ticker: 'GOOG', price: 120.97 },
-  { sa_ids: '1421', ticker: 'LLY', price: 468.98 },
+  { sa_ids: '1715', ticker: 'ASML', price: 724.75, company: 'ASML Holding N.V.' },
+  { sa_ids: '1534', ticker: 'TSM', price: 100.92, company: 'Taiwan Semiconductor Manufacturing Company Limited' },
+  { sa_ids: '575', ticker: 'MSFT', price: 340.54, company: 'Microsoft Corporation' },
+  { sa_ids: '1422', ticker: 'MRK', price: 115.38, company: 'Merck & Co., Inc.   ' },
+  { sa_ids: '14539', ticker: 'AVGO', price: 867.43, company: 'Broadcom Inc.' },
+  { sa_ids: '2182', ticker: 'DHI', price: 121.69, company: 'D.R. Horton, Inc.' },
+  { sa_ids: '1032', ticker: 'PEP', price: 185.14, company: 'PepsiCo, Inc.' },
+  { sa_ids: '1212', ticker: 'CVS', price: 69.13, company: 'CVS Health Corporation' },
+  { sa_ids: '903', ticker: 'MA', price: 393.3, company: 'Mastercard Incorporated    ' },
+  { sa_ids: '9691', ticker: 'V', price: 237.48, company: 'Visa Inc.' },
+  { sa_ids: '907', ticker: 'JPM', price: 145.44, company: 'JPMorgan Chase & Co.' },
+  { sa_ids: '1150', ticker: 'NVDA', price: 423.02, company: 'NVIDIA Corporation' },
+  { sa_ids: '1719', ticker: 'UNH', price: 480.64, company: 'UnitedHealth Group Incorporated' },
+  { sa_ids: '562', ticker: 'AMZN', price: 130.36, company: 'Amazon.com, Inc.' },
+  { sa_ids: '1135', ticker: 'JNJ', price: 165.34, company: 'Johnson & Johnson' },
+  { sa_ids: '146', ticker: 'AAPL', price: 164.9, company: 'Apple Inc.' },
+  { sa_ids: '544', ticker: 'GOOG', price: 120.97, company: 'Alphabet Inc.' },
+  { sa_ids: '1421', ticker: 'LLY', price: 468.98, company: 'Eli Lilly and Company' },
 ]
 @Injectable()
 export class TasksService {
@@ -84,7 +85,7 @@ export class TasksService {
       const quote = real_time_quotes[0]
       if (quote.last <= stock.price) {
         const difference = ((stock.price - quote.last) / stock.price) * 100
-        const message = `${stock.ticker}\nTarget: ${stock.price}\nCurrent: ${quote.last}\nDifference: ${difference}%`
+        const message = `${stock.ticker} - ${stock.company} ()\nTarget: ${stock.price}\nCurrent: ${quote.last}\nDifference: ${difference}%`
         sendLineNotify(message, 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
       }
     }
