@@ -9,6 +9,7 @@ import { WatchListsModule } from './watch-lists/watch-lists.module'
 import { ExchangesModule } from './exchanges/exchanges.module'
 import { AuthModule } from './auth/auth.module'
 import { CurrenciesModule } from './currencies/currencies.module'
+import { TasksModule } from './tasks/tasks.module'
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CurrenciesModule } from './currencies/currencies.module'
     CurrenciesModule,
     ExchangesModule,
     AuthModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
