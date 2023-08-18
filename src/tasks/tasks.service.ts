@@ -4,10 +4,10 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 
 @Injectable()
 export class TasksService {
-  @Cron(CronExpression.EVERY_3_HOURS)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async checkCurrentPriceStockFromSuperInvestor() {
     try {
-      sendLineNotify('test', 'ZYbjAHGznzVLn9rbrbnanxVuVRHNUclOAKntahtdR4f')
+      sendLineNotify('test', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
     } catch (error) {}
   }
 }
