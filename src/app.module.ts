@@ -10,12 +10,14 @@ import { ExchangesModule } from './exchanges/exchanges.module'
 import { AuthModule } from './auth/auth.module'
 import { CurrenciesModule } from './currencies/currencies.module'
 import { TasksModule } from './tasks/tasks.module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
     MongooseModule.forRoot(
       'mongodb+srv://cmoldster:k091hboAcR7**@cluster0.ja1bkxw.mongodb.net/myfund?retryWrites=true&w=majority',
     ),
+    ScheduleModule.forRoot(),
     PortfoliosModule,
     TransactionsModule,
     StocksModule,
