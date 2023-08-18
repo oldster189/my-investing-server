@@ -54,20 +54,9 @@ const stocks: FollowSuperInvestor[] = [
 ]
 @Injectable()
 export class TasksService {
-  @Cron(CronExpression.EVERY_30_SECONDS)
-  async checkCurrentPriceStockFromSuperInvestor0() {
-    try {
-      sendLineNotify('รอบท่ี่ 0', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
-
-      await this.handleCheckPriceRealTime()
-    } catch (error) {}
-  }
-
   @Cron('30,35,40,45,50,55 20 * * 1-5')
   async checkCurrentPriceStockFromSuperInvestor1() {
     try {
-      sendLineNotify('รอบท่ี่ 1', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
-
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
@@ -75,8 +64,6 @@ export class TasksService {
   @Cron('0,5,10,15,20,25,30,35,40,45,50,55 21-23 * * 1-5')
   async checkCurrentPriceStockFromSuperInvestor2() {
     try {
-      sendLineNotify('รอบท่ี่ 2', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
-
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
@@ -84,25 +71,30 @@ export class TasksService {
   @Cron('0,5,10,15,20,25,30,35,40,45,50,55 0-4 * * 2-6')
   async checkCurrentPriceStockFromSuperInvestor3() {
     try {
-      sendLineNotify('รอบท่ี่ 3', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
-
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
 
   async handleCheckPriceRealTime() {
-    for (let index = 0; index < stocks.length; index++) {
-      const stock = stocks[index]
-      const { data: response } = await axios.get<RealTimeQuote>(
-        `https://finance-api.seekingalpha.com/real_time_quotes?sa_ids=${stock.sa_ids}`,
-      )
-      const { real_time_quotes } = response
-      const quote = real_time_quotes[0]
-      if (quote.last <= stock.price) {
-        const difference = ((stock.price - quote.last) / stock.price) * 100
-        const message = `${stock.ticker} - ${stock.company} ()\nTarget: ${stock.price}\nCurrent: ${quote.last}\nDifference: ${difference}%`
-        sendLineNotify(message, 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
+    try {
+      for (let index = 0; index < stocks.length; index++) {
+        const stock = stocks[index]
+        const { data: response } = await axios.get<RealTimeQuote>(
+          `https://finance-api.seekingalpha.com/real_time_quotes?sa_ids=${stock.sa_ids}`,
+        )
+        const { real_time_quotes } = response
+        const quote = real_time_quotes[0]
+
+        if (quote.last <= stock.price) {
+          const difference = ((stock.price - quote.last) / stock.price) * 100
+          const message = `\`${stock.ticker}\` - ${stock.company}\n\`\`\`🎯Target: ${stock.price} | 🚴‍♂️Current: ${
+            quote.last
+          }\`\`\`\n💰Difference: *${difference.toFixed(2)}%*💰`
+          await sendLineNotify(message, 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
+        }
       }
+    } catch (error) {
+      await sendLineNotify(error.message, 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
     }
   }
 }
