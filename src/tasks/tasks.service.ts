@@ -57,6 +57,8 @@ export class TasksService {
   @Cron('30,35,40,45,50,55 20 * * 1-5')
   async checkCurrentPriceStockFromSuperInvestor1() {
     try {
+      sendLineNotify('รอบท่ี่ 1', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
+      
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
@@ -64,6 +66,8 @@ export class TasksService {
   @Cron('0,5,10,15,20,25,30,35,40,45,50,55 21-23 * * 1-5')
   async checkCurrentPriceStockFromSuperInvestor2() {
     try {
+      sendLineNotify('รอบท่ี่ 2', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
+
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
@@ -71,6 +75,8 @@ export class TasksService {
   @Cron('0,5,10,15,20,25,30,35,40,45,50,55 0-4 * * 2-6')
   async checkCurrentPriceStockFromSuperInvestor3() {
     try {
+      sendLineNotify('รอบท่ี่ 3', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
+
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
