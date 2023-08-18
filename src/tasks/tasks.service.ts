@@ -58,7 +58,7 @@ export class TasksService {
   async checkCurrentPriceStockFromSuperInvestor1() {
     try {
       sendLineNotify('รอบท่ี่ 1', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
-      
+
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
