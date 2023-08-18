@@ -54,6 +54,15 @@ const stocks: FollowSuperInvestor[] = [
 ]
 @Injectable()
 export class TasksService {
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async checkCurrentPriceStockFromSuperInvestor0() {
+    try {
+      sendLineNotify('รอบท่ี่ 0', 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
+
+      await this.handleCheckPriceRealTime()
+    } catch (error) {}
+  }
+
   @Cron('30,35,40,45,50,55 20 * * 1-5')
   async checkCurrentPriceStockFromSuperInvestor1() {
     try {
