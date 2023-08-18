@@ -89,7 +89,7 @@ export class TasksService {
           const difference = ((stock.price - quote.last) / stock.price) * 100
           const message = `\`${stock.ticker}\` - ${stock.company}\n\`\`\`🎯Target: ${stock.price} | 🚴‍♂️Current: ${
             quote.last
-          }\`\`\`\n💰Difference: *${difference.toFixed(2)}%*💰`
+          }\`\`\`\nDifference: *${difference.toFixed(2)}%*`
           await sendLineNotify(message, 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
         }
       }
