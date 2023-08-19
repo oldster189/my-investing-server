@@ -54,13 +54,6 @@ const stocks: FollowSuperInvestor[] = [
 ]
 @Injectable()
 export class TasksService {
-  @Cron(CronExpression.EVERY_MINUTE)
-  async checkCurrentPriceStockFromSuperInvestor0() {
-    try {
-      await this.handleCheckPriceRealTime()
-    } catch (error) {}
-  }
-
   @Cron('30,40 20 * * 1-5')
   async checkCurrentPriceStockFromSuperInvestor1() {
     try {
@@ -94,7 +87,7 @@ export class TasksService {
 
         if (quote.last <= stock.price) {
           const difference = ((stock.price - quote.last) / stock.price) * 100
-          const message = `\`${stock.ticker}\` - \`*${difference.toFixed(2)}%*\`\n\`\`\`🎯Target: ${
+          const message = `\`${stock.ticker}\` - \`${difference.toFixed(2)}%\`\n\`\`\`🎯Target: ${
             stock.price
           } | 🚴‍♂️Current: ${quote.last}\`\`\`\nCompany: ${stock.company}`
           await sendLineNotify(message, 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
