@@ -2,6 +2,7 @@ import { sendLineNotify } from './../utils/send-line.util'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 interface RealTimeQuote {
   real_time_quotes: Quote[]
@@ -54,14 +55,21 @@ const stocks: FollowSuperInvestor[] = [
 ]
 @Injectable()
 export class TasksService {
-  @Cron('*/30 20-23 * * 1-5')
+  @Cron('*/1 * * * *', { timeZone: 'Asia/Bangkok' })
+  async checkCurrentPriceStockFromSuperInvestor1() {
+    try {
+      await sendLineNotify(dayjs().toISOString(), 'clzhHdxVZ6FULIQJ42HGcToNjUIjRMbDmPsyEKdBpKR')
+    } catch (error) {}
+  }
+
+  @Cron('*/30 20-23 * * 1-5', { timeZone: 'Asia/Bangkok' })
   async checkCurrentPriceStockFromSuperInvestor2() {
     try {
       await this.handleCheckPriceRealTime()
     } catch (error) {}
   }
 
-  @Cron('*/30 0-2 * * 2-6')
+  @Cron('*/30 0-2 * * 2-6', { timeZone: 'Asia/Bangkok' })
   async checkCurrentPriceStockFromSuperInvestor3() {
     try {
       await this.handleCheckPriceRealTime()
