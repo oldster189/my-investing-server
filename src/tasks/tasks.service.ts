@@ -55,7 +55,7 @@ const stocks: FollowSuperInvestor[] = [
 ]
 @Injectable()
 export class TasksService {
-  @Cron('*/30 20-23 * * 1-5', { timeZone: 'Asia/Bangkok' })
+  @Cron('5,35 20-23 * * 1-5', { timeZone: 'Asia/Bangkok' })
   async checkCurrentPriceStockFromSuperInvestor2() {
     try {
       await this.handleCheckPriceRealTime()
