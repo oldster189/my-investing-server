@@ -14,9 +14,7 @@ import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://cmoldster:k091hboAcR7**@cluster0.ja1bkxw.mongodb.net/myfund?retryWrites=true&w=majority',
-    ),
+    MongooseModule.forRoot(process.env.MONGO_URL),
     ScheduleModule.forRoot(),
     PortfoliosModule,
     TransactionsModule,
