@@ -16,7 +16,6 @@ async function bootstrap() {
   app.useGlobalFilters(new TransformResponseExceptionFilter())
 
   app.enableCors()
-
   app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }))
   app.use(compression())
   app.use(json({ limit: '50mb' }))

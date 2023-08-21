@@ -2,7 +2,6 @@ import { sendLineNotify } from './../utils/send-line.util'
 import { Injectable } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import axios from 'axios'
-import dayjs from 'dayjs'
 
 interface RealTimeQuote {
   real_time_quotes: Quote[]

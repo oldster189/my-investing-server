@@ -1,3 +1,4 @@
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { AppController } from './app.controller'
@@ -14,7 +15,16 @@ import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGO_URL),
+    ConfigModule.forRoot({
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: `${configService.get<string>('MONGO_URI')}`,
+      }),
+      inject: [ConfigService],
+    }),
     ScheduleModule.forRoot(),
     PortfoliosModule,
     TransactionsModule,
