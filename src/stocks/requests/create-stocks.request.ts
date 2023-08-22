@@ -1,3 +1,4 @@
+import { CustomStocksType } from 'src/shared/enums/custom-stocks-type.enum'
 import { PartialType } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { IsEnum, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
@@ -39,6 +40,7 @@ export class CreateStocksRequest {
   dividend: DividendRequest
 
   @IsOptional()
+  @IsEnum(CustomStocksType)
   customType: string
 
   @IsOptional()

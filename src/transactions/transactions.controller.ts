@@ -12,9 +12,19 @@ export class TransactionsController {
     return this.transactionsService.getAll()
   }
 
+  @Get('portfolio/:portfolioId')
+  getAllByPortfolioId(@Param('portfolioId') portfolioId: string): Promise<TransactionResponse[]> {
+    return this.transactionsService.getAllByPortfolioId(portfolioId)
+  }
+
   @Get(':id')
   get(@Param('id') id: string): Promise<TransactionResponse> {
     return this.transactionsService.get(id)
+  }
+
+  @Post('zant/:portfolioId')
+  createByZant(@Param('portfolioId') portfolioId: string): Promise<TransactionResponse[]> {
+    return this.transactionsService.createByZant(portfolioId)
   }
 
   @Post()

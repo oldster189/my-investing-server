@@ -7,9 +7,14 @@ import { ExchangeResponse } from './responses/exchange.response'
 export class ExchangesController {
   constructor(private readonly exchangesService: ExchangesService) {}
 
-  @Get('list/:portfolioId')
-  getAll(@Param('portfolioId') portfolioId: string): Promise<ExchangeResponse[]> {
-    return this.exchangesService.getAll(portfolioId)
+  @Get('list')
+  getAll(): Promise<ExchangeResponse[]> {
+    return this.exchangesService.getAll()
+  }
+
+  @Get('portfolio/:portfolioId')
+  getAllByPortfolioId(@Param('portfolioId') portfolioId: string): Promise<ExchangeResponse[]> {
+    return this.exchangesService.getAllByPortfolioId(portfolioId)
   }
 
   @Get(':id')
@@ -27,10 +32,10 @@ export class ExchangesController {
     return this.exchangesService.update(updateRequest)
   }
 
-  @Delete('all')
-  deleteAll(): Promise<void> {
-    return this.exchangesService.deleteAll()
-  }
+  // @Delete('all')
+  // deleteAll(): Promise<void> {
+  //   return this.exchangesService.deleteAll()
+  // }
 
   @Delete(':id')
   delete(@Param('id') id: string): Promise<ExchangeResponse> {

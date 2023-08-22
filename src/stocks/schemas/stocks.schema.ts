@@ -8,7 +8,7 @@ export type StocksDocument = HydratedDocument<Stocks>
 
 @Schema({ timestamps: true })
 export class Stocks {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   symbol: string
 
   @Prop()
@@ -46,4 +46,9 @@ export class Stocks {
   logoid: string
 }
 
-export const StocksSchema = SchemaFactory.createForClass(Stocks)
+const StocksSchema = SchemaFactory.createForClass(Stocks)
+const StocksSchemaExcludeIndex = SchemaFactory.createForClass(Stocks)
+
+StocksSchema.index({ symbol: 1 }, { unique: true })
+
+export { StocksSchema, StocksSchemaExcludeIndex }

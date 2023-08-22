@@ -3,7 +3,7 @@ import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose'
 import { Currency, CurrencySchema } from 'src/currencies/schemas/currency.schema'
 import { TransactionStatus } from 'src/shared/enums/transaction-status.enum'
 import { TransactionType } from 'src/shared/enums/transaction-type.enum'
-import { Stocks, StocksSchema } from 'src/stocks/schemas/stocks.schema'
+import { Stocks, StocksSchemaExcludeIndex } from 'src/stocks/schemas/stocks.schema'
 
 export type TransactionDocument = HydratedDocument<Transaction>
 
@@ -19,7 +19,7 @@ export class Transaction {
   @Prop({ enum: TransactionType, default: TransactionType.BUY })
   type: string // Sell or Buy
 
-  @Prop({ type: StocksSchema })
+  @Prop({ type: StocksSchemaExcludeIndex })
   stocks: Stocks // ราคาหุ้น ตอนซื้อ และจำนวนหุ้น
 
   @Prop({ type: [CurrencySchema] })

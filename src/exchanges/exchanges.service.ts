@@ -17,7 +17,12 @@ export class ExchangesService {
     return modelMapper(ExchangeResponse, item)
   }
 
-  async getAll(portfolioId: string): Promise<ExchangeResponse[]> {
+  async getAll(): Promise<ExchangeResponse[]> {
+    const list = await this.exchangeModel.find().sort({ dateOfOrder: -1, createdAt: -1 })
+    return modelMapper(ExchangeListResponse, { data: list }).data
+  }
+
+  async getAllByPortfolioId(portfolioId: string): Promise<ExchangeResponse[]> {
     const list = await this.exchangeModel.find({ portfolioId }).sort({ dateOfOrder: -1, createdAt: -1 })
     return modelMapper(ExchangeListResponse, { data: list }).data
   }
@@ -49,7 +54,7 @@ export class ExchangesService {
     return item
   }
 
-  async deleteAll(): Promise<void> {
-    await this.exchangeModel.deleteMany()
-  }
+  // async deleteAll(): Promise<void> {
+  //   await this.exchangeModel.deleteMany()
+  // }
 }
