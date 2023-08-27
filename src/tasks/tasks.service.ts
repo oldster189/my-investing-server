@@ -1,6 +1,6 @@
 import { sendLineNotify } from './../utils/send-line.util'
 import { Injectable } from '@nestjs/common'
-import { Cron } from '@nestjs/schedule'
+import { Cron, CronExpression } from '@nestjs/schedule'
 import axios from 'axios'
 
 interface RealTimeQuote {
@@ -54,7 +54,7 @@ const stocks: FollowSuperInvestor[] = [
 ]
 @Injectable()
 export class TasksService {
-  @Cron('5,35 20-23 * * 1-5', { timeZone: 'Asia/Bangkok' })
+  @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: 'Asia/Bangkok' })
   async checkCurrentPriceStockFromSuperInvestor2() {
     try {
       await this.handleCheckPriceRealTime()
