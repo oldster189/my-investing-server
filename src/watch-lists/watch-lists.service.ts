@@ -9,12 +9,14 @@ import { WatchListResponse, WatchListListResponse } from './responses/watch-list
 import { WatchList, WatchListDocument } from './schemas/watch-list.schema'
 import { FollowSuperInvestor, RealTimeQuote } from './responses/follow-super-investor'
 import axios from 'axios'
+import { StocksService } from 'src/stocks/stocks.service'
 
 @Injectable()
 export class WatchListsService {
   constructor(
     @InjectModel(WatchList.name) private readonly watchListModel: Model<WatchListDocument>,
     @InjectModel(Stocks.name) private readonly stocksModel: Model<StocksDocument>,
+    private readonly stocksService: StocksService,
   ) {}
 
   async get(id: string): Promise<WatchListResponse> {
@@ -69,7 +71,8 @@ export class WatchListsService {
           )
           const { real_time_quotes } = response
           const quote = real_time_quotes[0]
-
+          const stockInfo = await this.stocksService.get(stock.ticker)
+          stock.info = stockInfo
           stock.currentPrice = quote.last
           stock.differencePercent = ((stock.targetPrice - quote.last) / stock.targetPrice) * 100
           return stock

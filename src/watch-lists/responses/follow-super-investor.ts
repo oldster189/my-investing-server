@@ -1,3 +1,5 @@
+import { StockInfo } from 'src/stocks/responses/stocks-info.response'
+
 export interface FollowSuperInvestor {
   sa_ids: string
   ticker: string
@@ -5,6 +7,7 @@ export interface FollowSuperInvestor {
   targetPrice: number
   currentPrice?: number
   differencePercent?: number
+  info?: StockInfo
 }
 
 export interface RealTimeQuote {
