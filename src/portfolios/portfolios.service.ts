@@ -73,9 +73,7 @@ export class PortfoliosService {
   }
 
   async updateStock(updateRequest: UpdatePortfolioRequest): Promise<PortfolioResponse> {
-    console.log(updateRequest)
     const { _id, stocks } = updateRequest
-    console.log(_id, stocks)
     const newStocksIds = stocks.map((stock) => stock._id)
     await this.portfolioModel.updateOne({ _id: new Types.ObjectId(_id) }, { $set: { stocksIds: newStocksIds } })
 

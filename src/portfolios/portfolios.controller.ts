@@ -35,7 +35,6 @@ export class PortfoliosController {
 
   @Put('update/stock')
   updateStock(@Body() updateRequest: UpdatePortfolioRequest): Promise<PortfolioResponse> {
-    console.log('first')
     return this.portfoliosService.updateStock(updateRequest)
   }
 

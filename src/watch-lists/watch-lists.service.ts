@@ -58,7 +58,6 @@ export class WatchListsService {
       { sa_ids: '3133', ticker: 'APD', targetPrice: 299.53, company: 'Air Products and Chemicals, Inc.' },
       { sa_ids: '2109', ticker: 'CI', targetPrice: 280.6, company: 'The Cigna Group' },
     ]
-
     return this.handleCheckPriceRealTime(stocks)
   }
 
@@ -72,7 +71,6 @@ export class WatchListsService {
           const { real_time_quotes } = response
           const quote = real_time_quotes[0]
           const stockInfo = await this.stocksService.get(stock.ticker)
-          console.log(stockInfo)
           stock.info = stockInfo
           stock.currentPrice = quote.last
           stock.differencePercent = ((stock.targetPrice - quote.last) / stock.targetPrice) * 100
@@ -82,9 +80,11 @@ export class WatchListsService {
           return newStock
         }),
       )
-
+      console.log(newStocks)
       return newStocks.sort((a, b) => b.differencePercent - a.differencePercent)
-    } catch (error) {}
+    } catch (error) {
+      throw error
+    }
   }
 
   async create(createRequest: CreateWatchListRequest): Promise<WatchListResponse> {

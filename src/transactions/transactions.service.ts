@@ -37,7 +37,6 @@ export class TransactionsService {
 
   async getAllByPortfolioId(portfolioId: string): Promise<TransactionResponse[]> {
     const list = await this.transactionModel.find({ portfolioId })
-    console.log(list.reduce((prev, curr) => prev + curr.stocks.share, 0.0))
     return modelMapper(TransactionListResponse, { data: list }).data
   }
 
@@ -4293,9 +4292,7 @@ export class TransactionsService {
         await new this.transactionModel(body).save()
       }
       return this.getAllBySymbol('IVV')
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   async update(updateRequest: UpdateTransactionRequest): Promise<TransactionResponse> {
