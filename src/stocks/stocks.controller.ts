@@ -37,6 +37,11 @@ export class StocksController {
     return this.stocksService.update(updateRequest)
   }
 
+  @Put('stock-info')
+  updateStockInfo(@Body() updateRequest: UpdateStocksRequest): Promise<StocksResponse> {
+    return this.stocksService.updateStockInfo(updateRequest)
+  }
+
   @Delete('all')
   deleteAll(): Promise<void> {
     return this.stocksService.deleteAll()

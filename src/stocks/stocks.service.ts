@@ -76,7 +76,6 @@ export class StocksService {
     const { sector, industry, country, company, exchange } = await this.getStockInfo(symbol)
     const logoid = await this.getLogoId(symbol)
     const newUpdateRequest = { company, sector, industry, country, logoid, exchange }
-
     await this.stocksModel.updateOne({ symbol: symbol }, newUpdateRequest)
     return this.get(symbol)
   }
@@ -94,17 +93,19 @@ export class StocksService {
   async getStockInfo(symbol: string): Promise<StockInfo> {
     try {
       const { data } = await axios.get(`https://finviz.com/quote.ashx?t=${symbol}&ty=c&p=d&b=1`)
-      const htmlTable = '<table width="100%" cellpadding="3" cellspacing="0" bgcolor="#ffffff" class="fullview-title">'
+      const htmlTable = '<table width="100%" cellpadding="3" cellspacing="0" class="fullview-title">'
       const contents = data.split(htmlTable)[1]
       const htmlTableCloseTag = '</table>'
       const contentStockInfo = contents.split(htmlTableCloseTag)[0]
-      const trTags = contentStockInfo.split('<tr><td')
-      let exchange = trTags[1].split('[')[1].split(']')[0]
+
+      const trTags = contentStockInfo.split('<tr class="text-blue-500"><td')
+      const trExchange = trTags[1].split('class="tab-link">')
+      let exchange = trExchange[trExchange.length - 1].split('</a>')[0]
       if (exchange === 'NASD') {
         exchange = 'NASDAQ'
       }
 
-      const companyTags = trTags[2].split('rel="nofollow"><b>')
+      const companyTags = trTags[1].split('rel="nofollow"><b>')
       const company = companyTags[1].split('</b>')[0]
 
       const infoTags = trTags[trTags.length - 1]
