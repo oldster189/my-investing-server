@@ -18,6 +18,11 @@ export class StocksService {
     return !!item
   }
 
+  async getById(id: string): Promise<StocksResponse> {
+    const item = await this.stocksModel.findById(id)
+    return modelMapper(StocksResponse, item)
+  }
+
   async get(symbol: string): Promise<StocksResponse> {
     const item = await this.stocksModel.findOne({ symbol })
     return modelMapper(StocksResponse, item)
@@ -40,7 +45,7 @@ export class StocksService {
     const newCreateRequest = { ...createRequest, company, sector, industry, country, logoid, exchange }
 
     const newItem = await new this.stocksModel(newCreateRequest).save()
-    return this.get(String(newItem._id))
+    return this.getById(String(newItem._id))
   }
 
   async createList(createRequests: CreateStocksRequest[]): Promise<StocksResponse[]> {
@@ -62,11 +67,22 @@ export class StocksService {
   async update(updateRequest: UpdateStocksRequest): Promise<StocksResponse> {
     const { _id } = updateRequest
     await this.stocksModel.updateOne({ _id: new Types.ObjectId(_id) }, updateRequest)
-    return this.get(_id)
+    return this.getById(_id)
+  }
+
+  async updateStockInfo(updateRequest: UpdateStocksRequest): Promise<StocksResponse> {
+    const { symbol } = updateRequest
+
+    const { sector, industry, country, company, exchange } = await this.getStockInfo(symbol)
+    const logoid = await this.getLogoId(symbol)
+    const newUpdateRequest = { company, sector, industry, country, logoid, exchange }
+
+    await this.stocksModel.updateOne({ symbol: symbol }, newUpdateRequest)
+    return this.get(symbol)
   }
 
   async delete(id: string): Promise<StocksResponse> {
-    const item = await this.get(id)
+    const item = await this.getById(id)
     await this.stocksModel.deleteOne({ _id: new Types.ObjectId(id) })
     return item
   }
