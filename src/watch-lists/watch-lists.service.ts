@@ -52,7 +52,7 @@ export class WatchListsService {
       { sa_ids: '562', ticker: 'AMZN', targetPrice: 130.36, company: 'Amazon.com, Inc.' },
       { sa_ids: '1135', ticker: 'JNJ', targetPrice: 165.34, company: 'Johnson & Johnson' },
       { sa_ids: '146', ticker: 'AAPL', targetPrice: 164.9, company: 'Apple Inc.' },
-      { sa_ids: '544', ticker: 'GOOG', targetPrice: 120.97, company: 'Alphabet Inc.' },
+      { sa_ids: '544', ticker: 'GOOGL', targetPrice: 120.97, company: 'Alphabet Inc.' },
       { sa_ids: '1421', ticker: 'LLY', targetPrice: 468.98, company: 'Eli Lilly and Company' },
       { sa_ids: '92371', ticker: 'ABBV', targetPrice: 134.73, company: 'AbbVie Inc.' },
       { sa_ids: '3133', ticker: 'APD', targetPrice: 299.53, company: 'Air Products and Chemicals, Inc.' },
