@@ -9,7 +9,7 @@ export class CreateStocksRequest {
   @IsNotEmpty()
   symbol: string
 
-  @IsNotEmpty()
+  @IsOptional()
   company: string
 
   @IsOptional()

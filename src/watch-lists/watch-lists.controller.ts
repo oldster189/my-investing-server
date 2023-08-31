@@ -3,14 +3,14 @@ import { AddStockWatchListRequest } from './requests/add-stock-watch-list.reques
 import { CreateWatchListRequest, UpdateWatchListRequest } from './requests/create-watch-list.request'
 import { WatchListResponse } from './responses/watch-list.response'
 import { WatchListsService } from './watch-lists.service'
-import { FollowSuperInvestor } from './responses/follow-super-investor'
+import { FollowSuperInvestorResponse } from './responses/follow-super-investor'
 
 @Controller('watch-lists')
 export class WatchListsController {
   constructor(private readonly watchListsService: WatchListsService) {}
 
   @Get('follow-super-investor')
-  getAllFollowSuperInvestor(): Promise<FollowSuperInvestor[]> {
+  getAllFollowSuperInvestor(): Promise<FollowSuperInvestorResponse[]> {
     return this.watchListsService.getAllFollowSuperInvestor()
   }
 

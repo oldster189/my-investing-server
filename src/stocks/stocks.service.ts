@@ -35,9 +35,9 @@ export class StocksService {
 
   async create(createRequest: CreateStocksRequest): Promise<StocksResponse> {
     const { symbol } = createRequest
-    const { sector, industry, country } = await this.getStockInfo(symbol)
+    const { sector, industry, country, company, exchange } = await this.getStockInfo(symbol)
     const logoid = await this.getLogoId(symbol)
-    const newCreateRequest = { ...createRequest, sector, industry, country, logoid }
+    const newCreateRequest = { ...createRequest, company, sector, industry, country, logoid, exchange }
 
     const newItem = await new this.stocksModel(newCreateRequest).save()
     return this.get(String(newItem._id))
@@ -48,9 +48,9 @@ export class StocksService {
     for (let index = 0; index < createRequests.length; index++) {
       const createRequest = createRequests[index]
       const { symbol } = createRequest
-      const { sector, industry, country, exchange } = await this.getStockInfo(symbol)
+      const { sector, industry, country, company, exchange } = await this.getStockInfo(symbol)
       const logoid = await this.getLogoId(symbol)
-      const newCreateRequest = { ...createRequest, sector, industry, country, logoid, exchange }
+      const newCreateRequest = { ...createRequest, company, sector, industry, country, logoid, exchange }
       newCreateRequests.push(newCreateRequest)
     }
 

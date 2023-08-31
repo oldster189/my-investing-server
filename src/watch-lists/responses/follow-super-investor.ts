@@ -1,4 +1,6 @@
+import { Expose } from 'class-transformer'
 import { StockInfo } from 'src/stocks/responses/stocks-info.response'
+import { StocksResponse } from 'src/stocks/responses/stocks.response'
 
 export interface FollowSuperInvestor {
   sa_ids: string
@@ -8,6 +10,29 @@ export interface FollowSuperInvestor {
   currentPrice?: number
   differencePercent?: number
   info?: StockInfo
+}
+
+export class FollowSuperInvestorResponse {
+  @Expose()
+  sa_ids: string
+
+  @Expose()
+  ticker: string
+
+  @Expose()
+  company: string
+
+  @Expose()
+  targetPrice: number
+
+  @Expose()
+  currentPrice: number
+
+  @Expose()
+  differencePercent: number
+
+  @Expose()
+  info: StocksResponse[]
 }
 
 export interface RealTimeQuote {

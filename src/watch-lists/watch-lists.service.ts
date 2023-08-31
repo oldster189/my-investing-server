@@ -7,7 +7,7 @@ import { AddStockWatchListRequest } from './requests/add-stock-watch-list.reques
 import { CreateWatchListRequest, UpdateWatchListRequest } from './requests/create-watch-list.request'
 import { WatchListResponse, WatchListListResponse } from './responses/watch-list.response'
 import { WatchList, WatchListDocument } from './schemas/watch-list.schema'
-import { FollowSuperInvestor, RealTimeQuote } from './responses/follow-super-investor'
+import { FollowSuperInvestor, FollowSuperInvestorResponse, RealTimeQuote } from './responses/follow-super-investor'
 import axios from 'axios'
 import { StocksService } from 'src/stocks/stocks.service'
 
@@ -29,7 +29,7 @@ export class WatchListsService {
     return modelMapper(WatchListListResponse, { data: list }).data
   }
 
-  async getAllFollowSuperInvestor(): Promise<FollowSuperInvestor[]> {
+  async getAllFollowSuperInvestor(): Promise<FollowSuperInvestorResponse[]> {
     const stocks: FollowSuperInvestor[] = [
       { sa_ids: '1715', ticker: 'ASML', targetPrice: 724.75, company: 'ASML Holding N.V.' },
       {
@@ -62,7 +62,7 @@ export class WatchListsService {
     return this.handleCheckPriceRealTime(stocks)
   }
 
-  async handleCheckPriceRealTime(stocks: FollowSuperInvestor[]): Promise<FollowSuperInvestor[]> {
+  async handleCheckPriceRealTime(stocks: FollowSuperInvestor[]): Promise<FollowSuperInvestorResponse[]> {
     try {
       const newStocks = await Promise.all(
         stocks.map(async (stock) => {
@@ -72,10 +72,14 @@ export class WatchListsService {
           const { real_time_quotes } = response
           const quote = real_time_quotes[0]
           const stockInfo = await this.stocksService.get(stock.ticker)
+          console.log(stockInfo)
           stock.info = stockInfo
           stock.currentPrice = quote.last
           stock.differencePercent = ((stock.targetPrice - quote.last) / stock.targetPrice) * 100
-          return stock
+          const newStock: any = {
+            ...stock,
+          }
+          return newStock
         }),
       )
 
