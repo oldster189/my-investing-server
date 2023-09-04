@@ -8,6 +8,8 @@ export interface FollowSuperInvestor {
   company?: string
   targetPrice: number
   currentPrice?: number
+  futurePrice?: number
+  futureDifferencePercent?: number
   differencePercent?: number
   info?: StockInfo
 }
@@ -49,6 +51,7 @@ export interface Quote {
   close: number
   prev_close: number
   last: number
+  ext_price?: number
   volume: number
   last_time: Date
   market_cap: number

@@ -52,7 +52,7 @@ export class WatchListsService {
       { sa_ids: '562', ticker: 'AMZN', targetPrice: 130.36, company: 'Amazon.com, Inc.' },
       { sa_ids: '1135', ticker: 'JNJ', targetPrice: 165.34, company: 'Johnson & Johnson' },
       { sa_ids: '146', ticker: 'AAPL', targetPrice: 164.9, company: 'Apple Inc.' },
-      { sa_ids: '544', ticker: 'GOOGL', targetPrice: 120.97, company: 'Alphabet Inc.' },
+      { sa_ids: '148893', ticker: 'GOOGL', targetPrice: 120.97, company: 'Alphabet Inc.' },
       { sa_ids: '1421', ticker: 'LLY', targetPrice: 468.98, company: 'Eli Lilly and Company' },
       { sa_ids: '92371', ticker: 'ABBV', targetPrice: 134.73, company: 'AbbVie Inc.' },
       { sa_ids: '3133', ticker: 'APD', targetPrice: 299.53, company: 'Air Products and Chemicals, Inc.' },
@@ -63,7 +63,10 @@ export class WatchListsService {
 
   async handleCheckPriceRealTime(stocks: FollowSuperInvestor[]): Promise<FollowSuperInvestorResponse[]> {
     try {
-      const ids = stocks.map((stock) => stock.sa_ids).join(',')
+      const ids = stocks
+        .map((stock) => stock.sa_ids)
+        .sort((a, b) => Number(a) - Number(b))
+        .join(',')
       const symbols = stocks.map((stock) => stock.ticker)
       const stockInfos = await this.stocksService.getBySymbols(symbols)
       const { data: response } = await axios.get<RealTimeQuote>(
@@ -76,7 +79,11 @@ export class WatchListsService {
           const stockInfo = stockInfos.find((item) => item.symbol === quote.symbol)
           stock.info = stockInfo
           stock.currentPrice = quote.last
+          stock.futurePrice = quote.ext_price
           stock.differencePercent = ((stock.targetPrice - quote.last) / stock.targetPrice) * 100
+          stock.futureDifferencePercent = quote.ext_price
+            ? ((stock.targetPrice - quote.ext_price) / stock.targetPrice) * 100
+            : 0
           const newStock: any = {
             ...stock,
           }
