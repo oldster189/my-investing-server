@@ -11,6 +11,7 @@ import { StocksService } from 'src/stocks/stocks.service'
 import { TransactionType } from 'src/shared/enums/transaction-type.enum'
 import * as dayjs from 'dayjs'
 import { UpdateStocksRequest } from 'src/stocks/requests/create-stocks.request'
+import { ExchangeQuery } from 'src/exchanges/requests/query-exchange.request'
 
 @Injectable()
 export class TransactionsService {
@@ -4263,7 +4264,8 @@ export class TransactionsService {
   async createByZant(portfolioId: string): Promise<TransactionResponse[]> {
     try {
       const ivv = await this.stocksService.get('IVV')
-      const exchanges = await this.exchangesService.getAllByPortfolioId(portfolioId)
+      const query: ExchangeQuery = { type: 'all' }
+      const exchanges = await this.exchangesService.getAllByPortfolioId(portfolioId, query)
       for (let index = 0; index < exchanges.length; index++) {
         const exchange = exchanges[index]
 

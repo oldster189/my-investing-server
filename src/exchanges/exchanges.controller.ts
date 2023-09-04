@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { ExchangesService } from './exchanges.service'
 import { CreateExchangeRequest, UpdateExchangeRequest } from './requests/create-exchange.request'
 import { ExchangeResponse } from './responses/exchange.response'
+import { ExchangeQuery } from './requests/query-exchange.request'
 
 @Controller('exchanges')
 export class ExchangesController {
@@ -13,8 +14,11 @@ export class ExchangesController {
   }
 
   @Get('portfolio/:portfolioId')
-  getAllByPortfolioId(@Param('portfolioId') portfolioId: string): Promise<ExchangeResponse[]> {
-    return this.exchangesService.getAllByPortfolioId(portfolioId)
+  getAllByPortfolioId(
+    @Param('portfolioId') portfolioId: string,
+    @Query() query: ExchangeQuery,
+  ): Promise<ExchangeResponse[]> {
+    return this.exchangesService.getAllByPortfolioId(portfolioId, query)
   }
 
   @Get(':id')

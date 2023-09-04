@@ -7,6 +7,7 @@ import { modelMapper } from 'src/utils/mapper.util'
 import { CreateExchangeRequest, UpdateExchangeRequest } from './requests/create-exchange.request'
 import { ExchangeListResponse, ExchangeResponse } from './responses/exchange.response'
 import { Exchange, ExchangeDocument } from './schemas/exchange.schema'
+import { ExchangeQuery } from './requests/query-exchange.request'
 
 @Injectable()
 export class ExchangesService {
@@ -22,8 +23,23 @@ export class ExchangesService {
     return modelMapper(ExchangeListResponse, { data: list }).data
   }
 
-  async getAllByPortfolioId(portfolioId: string): Promise<ExchangeResponse[]> {
-    const list = await this.exchangeModel.find({ portfolioId }).sort({ dateOfOrder: -1, createdAt: -1 })
+  async getAllByPortfolioId(portfolioId: string, query: ExchangeQuery): Promise<ExchangeResponse[]> {
+    const { type, startDate, endDate } = query
+    let filter = {}
+    if (type === 'customs') {
+      filter = {
+        dateOfOrder: {
+          $gte: dayjs(startDate).startOf('date').toISOString(),
+          $lte: dayjs(endDate).endOf('date').toISOString(),
+        },
+      }
+    }
+    const list = await this.exchangeModel
+      .find({
+        portfolioId,
+        ...(type === 'customs' && filter),
+      })
+      .sort({ dateOfOrder: -1, createdAt: -1 })
     return modelMapper(ExchangeListResponse, { data: list }).data
   }
 
