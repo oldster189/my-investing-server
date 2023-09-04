@@ -9,6 +9,7 @@ import { WatchListResponse, WatchListListResponse } from './responses/watch-list
 import { WatchList, WatchListDocument } from './schemas/watch-list.schema'
 import { FollowSuperInvestor, FollowSuperInvestorResponse, RealTimeQuote } from './responses/follow-super-investor'
 import axios from 'axios'
+import { forkJoin, firstValueFrom } from 'rxjs'
 import { StocksService } from 'src/stocks/stocks.service'
 
 @Injectable()
@@ -63,13 +64,16 @@ export class WatchListsService {
 
   async handleCheckPriceRealTime(stocks: FollowSuperInvestor[]): Promise<FollowSuperInvestorResponse[]> {
     try {
+      const services = stocks.map(async (stock) =>
+        axios.get<RealTimeQuote>(`https://finance-api.seekingalpha.com/real_time_quotes?sa_ids=${stock.sa_ids}`),
+      )
+
+      const responseList = await firstValueFrom(forkJoin(services))
       const newStocks = await Promise.all(
-        stocks.map(async (stock) => {
-          const { data: response } = await axios.get<RealTimeQuote>(
-            `https://finance-api.seekingalpha.com/real_time_quotes?sa_ids=${stock.sa_ids}`,
-          )
+        responseList.map(async ({ data: response }) => {
           const { real_time_quotes } = response
           const quote = real_time_quotes[0]
+          const stock = stocks.find((item) => item.sa_ids === String(quote.sa_id))
           const stockInfo = await this.stocksService.get(stock.ticker)
           stock.info = stockInfo
           stock.currentPrice = quote.last
@@ -80,7 +84,7 @@ export class WatchListsService {
           return newStock
         }),
       )
-      console.log(newStocks)
+
       return newStocks.sort((a, b) => b.differencePercent - a.differencePercent)
     } catch (error) {
       throw error
