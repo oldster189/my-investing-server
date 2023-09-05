@@ -79,7 +79,7 @@ export class WatchListsService {
           const stockInfo = stockInfos.find((item) => item.symbol === quote.symbol)
           stock.info = stockInfo
           stock.currentPrice = quote.last
-          stock.futurePrice = quote.ext_price
+          stock.futurePrice = quote.ext_price || 0
           stock.differencePercent = ((stock.targetPrice - quote.last) / stock.targetPrice) * 100
           stock.futureDifferencePercent = quote.ext_price
             ? ((stock.targetPrice - quote.ext_price) / stock.targetPrice) * 100
