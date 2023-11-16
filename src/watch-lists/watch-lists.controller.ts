@@ -19,6 +19,11 @@ export class WatchListsController {
     return this.watchListsService.getAll()
   }
 
+  @Get('schd')
+  fetchCsvAndConvertToJson(): Promise<any> {
+    return this.watchListsService.fetchCsvAndConvertToJson()
+  }
+
   @Get(':id')
   get(@Param('id') id: string): Promise<WatchListResponse> {
     return this.watchListsService.get(id)

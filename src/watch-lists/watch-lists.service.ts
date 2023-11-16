@@ -9,7 +9,9 @@ import { WatchListResponse, WatchListListResponse } from './responses/watch-list
 import { WatchList, WatchListDocument } from './schemas/watch-list.schema'
 import { FollowSuperInvestor, FollowSuperInvestorResponse, RealTimeQuote } from './responses/follow-super-investor'
 import axios from 'axios'
+import * as Papa from 'papaparse'
 import { StocksService } from 'src/stocks/stocks.service'
+import * as dayjs from 'dayjs'
 
 @Injectable()
 export class WatchListsService {
@@ -31,35 +33,38 @@ export class WatchListsService {
 
   async getAllFollowSuperInvestor(): Promise<FollowSuperInvestorResponse[]> {
     const stocks: FollowSuperInvestor[] = [
-      { sa_ids: '1715', ticker: 'ASML', targetPrice: 724.75, company: 'ASML Holding N.V.' },
+      { sa_ids: '1715', ticker: 'ASML', targetPrice: 588.66, company: 'ASML Holding N.V.' },
       {
         sa_ids: '1534',
         ticker: 'TSM',
-        targetPrice: 100.92,
+        targetPrice: 86.9,
         company: 'Taiwan Semiconductor Manufacturing Company Limited',
       },
-      { sa_ids: '575', ticker: 'MSFT', targetPrice: 340.54, company: 'Microsoft Corporation' },
-      { sa_ids: '1422', ticker: 'MRK', targetPrice: 115.38, company: 'Merck & Co., Inc.   ' },
-      { sa_ids: '14539', ticker: 'AVGO', targetPrice: 867.43, company: 'Broadcom Inc.' },
+      { sa_ids: '575', ticker: 'MSFT', targetPrice: 315.75, company: 'Microsoft Corporation' },
+      { sa_ids: '1422', ticker: 'MRK', targetPrice: 102.95, company: 'Merck & Co., Inc.   ' },
+      { sa_ids: '14539', ticker: 'AVGO', targetPrice: 830.58, company: 'Broadcom Inc.' },
       { sa_ids: '2182', ticker: 'DHI', targetPrice: 121.69, company: 'D.R. Horton, Inc.' },
-      { sa_ids: '1032', ticker: 'PEP', targetPrice: 185.14, company: 'PepsiCo, Inc.' },
-      { sa_ids: '1212', ticker: 'CVS', targetPrice: 69.13, company: 'CVS Health Corporation' },
-      { sa_ids: '903', ticker: 'MA', targetPrice: 393.3, company: 'Mastercard Incorporated' },
-      { sa_ids: '9691', ticker: 'V', targetPrice: 237.48, company: 'Visa Inc.' },
-      { sa_ids: '907', ticker: 'JPM', targetPrice: 145.44, company: 'JPMorgan Chase & Co.' },
-      { sa_ids: '1150', ticker: 'NVDA', targetPrice: 423.02, company: 'NVIDIA Corporation' },
-      { sa_ids: '1719', ticker: 'UNH', targetPrice: 480.64, company: 'UnitedHealth Group Incorporated' },
-      { sa_ids: '562', ticker: 'AMZN', targetPrice: 130.36, company: 'Amazon.com, Inc.' },
-      { sa_ids: '1135', ticker: 'JNJ', targetPrice: 165.34, company: 'Johnson & Johnson' },
-      { sa_ids: '146', ticker: 'AAPL', targetPrice: 164.9, company: 'Apple Inc.' },
-      { sa_ids: '148893', ticker: 'GOOGL', targetPrice: 120.97, company: 'Alphabet Inc.' },
-      { sa_ids: '1421', ticker: 'LLY', targetPrice: 468.98, company: 'Eli Lilly and Company' },
-      { sa_ids: '92371', ticker: 'ABBV', targetPrice: 134.73, company: 'AbbVie Inc.' },
+      { sa_ids: '1032', ticker: 'PEP', targetPrice: 169.44, company: 'PepsiCo, Inc.' },
+      { sa_ids: '1212', ticker: 'CVS', targetPrice: 69.82, company: 'CVS Health Corporation' },
+      { sa_ids: '903', ticker: 'MA', targetPrice: 395.91, company: 'Mastercard Incorporated' },
+      { sa_ids: '9691', ticker: 'V', targetPrice: 230.01, company: 'Visa Inc.' },
+      { sa_ids: '907', ticker: 'JPM', targetPrice: 144.94, company: 'JPMorgan Chase & Co.' },
+      { sa_ids: '1150', ticker: 'NVDA', targetPrice: 434.99, company: 'NVIDIA Corporation' },
+      { sa_ids: '1719', ticker: 'UNH', targetPrice: 504.19, company: 'UnitedHealth Group Incorporated' },
+      { sa_ids: '562', ticker: 'AMZN', targetPrice: 127.12, company: 'Amazon.com, Inc.' },
+      { sa_ids: '1135', ticker: 'JNJ', targetPrice: 155.75, company: 'Johnson & Johnson' },
+      { sa_ids: '146', ticker: 'AAPL', targetPrice: 171.21, company: 'Apple Inc.' },
+      { sa_ids: '148893', ticker: 'GOOGL', targetPrice: 130.86, company: 'Alphabet Inc.' },
+      { sa_ids: '1421', ticker: 'LLY', targetPrice: 537.13, company: 'Eli Lilly and Company' },
+      { sa_ids: '92371', ticker: 'ABBV', targetPrice: 149.06, company: 'AbbVie Inc.' },
       { sa_ids: '3133', ticker: 'APD', targetPrice: 299.53, company: 'Air Products and Chemicals, Inc.' },
-      { sa_ids: '2109', ticker: 'CI', targetPrice: 280.6, company: 'The Cigna Group' },
+      { sa_ids: '2109', ticker: 'CI', targetPrice: 286.07, company: 'The Cigna Group' },
+      { sa_ids: '1216', ticker: 'PFE', targetPrice: 33.17, company: 'Pfizer Inc.' },
+      { sa_ids: '54', ticker: 'SPY', targetPrice: 427.48, company: 'SPDR® S&P 500 ETF Trust' },
     ]
     return this.handleCheckPriceRealTime(stocks)
   }
+  //https://seekingalpha.com/api/v3/symbol_data?fields[]=divDistribution&fields[]=dividends&slugs=AAPL
 
   async handleCheckPriceRealTime(stocks: FollowSuperInvestor[]): Promise<FollowSuperInvestorResponse[]> {
     try {
@@ -118,5 +123,47 @@ export class WatchListsService {
     const item = await this.get(id)
     await this.watchListModel.deleteOne({ _id: new Types.ObjectId(id) })
     return item
+  }
+
+  async fetchCsvAndConvertToJson() {
+    try {
+      const url = `https://www.schwabassetmanagement.com/sites/g/files/eyrktu361/files/product_files/SCHD/SCHD_FundHoldings_${dayjs().format(
+        'YYYY-MM-DD',
+      )}.CSV`
+      console.log(url)
+      const response = await axios.get(url)
+      const csvData = response.data
+      const stocks: any[] = await new Promise((resolve, reject) => {
+        Papa.parse(csvData, {
+          header: true, // Use the first row as header names
+          dynamicTyping: true, // Convert strings to numbers or booleans if possible
+          skipEmptyLines: true, // Skips empty lines in the CSV file
+          complete: async function (results) {
+            resolve(results.data.slice(0, 20))
+          },
+          error: function (err) {
+            reject(err)
+          },
+        })
+      })
+
+      const slugs = stocks.map((item: any) => item.Symbol).join(',')
+      const config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: 'https://seekingalpha.com/api/v3/symbol_data?fields[]=div_yield_fwd&fields[]=div_yield_4y&slugs=AMGN,ABBV,CVX,PFE,PEP,MRK,CSCO,TXN,VZ,AVGO,KO,UPS,HD,ADP,BLK,LMT,MO,BX,EOG,ITW',
+        headers: {
+          Cookie:
+            'ever_pro=1; gk_user_access=; gk_user_access_sign=; machine_cookie=2741878955146; machine_cookie_ts=1690212269',
+        },
+      }
+
+      const { data: responseDiv } = await axios.request(config)
+
+      return responseDiv
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
   }
 }
