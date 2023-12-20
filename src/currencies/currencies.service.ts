@@ -15,7 +15,8 @@ export class CurrenciesService {
 
   async getExchangeRate(): Promise<any> {
     try {
-      const url = `https://bank.kkpfg.com/Utility/GetExchangeRate?date=${dayjs().toISOString()}&lang=th&firstTime=true`
+
+      const url = `https://bank.kkpfg.com/Utility/GetExchangeRate?date=${dayjs().toISOString()}&lang=th&firstTime=false`
       const { data: response } = await axios.get<ExchangeRate>(url)
       const usdDetail = response.data[response.data.length - 1].detail.find((detail) => detail.currencyCode === 'USD')
       if (!usdDetail) throw new BadRequestException('Exchange rate not found')
