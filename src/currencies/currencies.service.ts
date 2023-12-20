@@ -1,7 +1,6 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import axios from 'axios'
-import * as dayjs from 'dayjs'
 import { Model, Types } from 'mongoose'
 import { modelMapper } from 'src/utils/mapper.util'
 import { CreateCurrencyRequest, UpdateCurrencyRequest } from './requests/create-currency.request'
@@ -15,14 +14,19 @@ export class CurrenciesService {
 
   async getExchangeRate(): Promise<any> {
     try {
-      const url = `https://bank.kkpfg.com/Utility/GetExchangeRate?date=${dayjs().toISOString()}&lang=th&firstTime=false`
-      const { data: response } = await axios.get<ExchangeRate>(url)
-      const usdDetail = response.data[response.data.length - 1].detail.find((detail) => detail.currencyCode === 'USD')
-      if (!usdDetail) throw new BadRequestException('Exchange rate not found')
+      const options = {
+        method: 'GET',
+        url: 'https://exchange-rate-api1.p.rapidapi.com/latest',
+        params: { base: 'USD' },
+        headers: {
+          'X-RapidAPI-Key': '9c96ae2b60msh9840e548bdd1f93p111c6ajsn4bc476b0f16e',
+          'X-RapidAPI-Host': 'exchange-rate-api1.p.rapidapi.com',
+        },
+      }
 
-      const { currencyCode, buyingRate } = usdDetail
-      const newCurrency = await this.getByCode(currencyCode)
-      newCurrency.rate = buyingRate
+      const response = await axios.request<ExchangeRate>(options)
+      const newCurrency = await this.getByCode('THB')
+      newCurrency.rate = response.data.rates['THB']
       return newCurrency
     } catch (error) {
       throw error

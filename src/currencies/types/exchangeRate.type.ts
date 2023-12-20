@@ -16,3 +16,10 @@ export interface ExchangeRateDetail {
   buyingRate: number
   sellingRate: number
 }
+
+export interface ExchangeRate {
+  code: string
+  msg: string
+  base: string
+  rates: { [key: string]: number }
+}

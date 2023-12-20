@@ -9,6 +9,7 @@ export class CurrenciesController {
 
   @Get('exchange-rate')
   getExchangeRate(): Promise<any> {
+    console.log('first')
     return this.currenciesService.getExchangeRate()
   }
 
