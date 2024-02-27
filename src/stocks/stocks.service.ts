@@ -43,7 +43,6 @@ export class StocksService {
     const { sector, industry, country, company, exchange } = await this.getStockInfo(symbol)
     const logoid = await this.getLogoId(symbol)
     const newCreateRequest = { ...createRequest, company, sector, industry, country, logoid, exchange }
-
     const newItem = await new this.stocksModel(newCreateRequest).save()
     return this.getById(String(newItem._id))
   }

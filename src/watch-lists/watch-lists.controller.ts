@@ -14,6 +14,11 @@ export class WatchListsController {
     return this.watchListsService.getAllFollowSuperInvestor()
   }
 
+  @Get('analytic-stocks')
+  getAnalyticStocks(): Promise<any> {
+    return this.watchListsService.getAnalyticStocks()
+  }
+
   @Get('list')
   getAll(): Promise<WatchListResponse[]> {
     return this.watchListsService.getAll()

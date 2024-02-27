@@ -11,6 +11,7 @@ import { FollowSuperInvestor, FollowSuperInvestorResponse, RealTimeQuote } from 
 import axios from 'axios'
 import { StocksService } from 'src/stocks/stocks.service'
 import * as dayjs from 'dayjs'
+import * as ANLYTIC_STOCKS from './db.json'
 
 @Injectable()
 export class WatchListsService {
@@ -28,6 +29,68 @@ export class WatchListsService {
   async getAll(): Promise<WatchListResponse[]> {
     const list = await this.watchListModel.find().populate('stocks', '', this.stocksModel)
     return modelMapper(WatchListListResponse, { data: list }).data
+  }
+
+  async getAnalyticStocks(): Promise<any> {
+    const ThreeYear = '79135'
+    const FifthYear = '79137'
+
+    const anlyticStockObj = ANLYTIC_STOCKS.data
+      .filter((item) => {
+        return (
+          (item.relationships.metric_type.data.id === ThreeYear && item.attributes.value >= 45) ||
+          (item.relationships.metric_type.data.id === FifthYear && item.attributes.value >= 95)
+        )
+      })
+      .map((item) => {
+        const stock = ANLYTIC_STOCKS.included.find((stock) => stock.id === item.relationships.ticker.data.id)
+        return {
+          id: item.relationships.metric_type.data.id,
+          value: item.attributes.value,
+          ticker: stock.attributes.name,
+        }
+      })
+      .reduce((acc, item) => {
+        if (!acc[item.ticker]) {
+          acc[item.ticker] = {}
+        }
+        if (item.id === ThreeYear) {
+          acc[item.ticker] = { ...acc[item.ticker], '3Y': item.value.toFixed(2) }
+        } else {
+          acc[item.ticker] = { ...acc[item.ticker], '5Y': item.value.toFixed(2) }
+        }
+        return acc
+      }, {})
+
+    const symbols = Object.keys(anlyticStockObj)
+    const stockInfos = await this.stocksService.getBySymbols(symbols)
+
+    return Object.entries(anlyticStockObj)
+      .map(([ticker, value]) => {
+        const info = stockInfos.find((item) => item.symbol === ticker)
+        return { ticker, info, ...(value as object) }
+      })
+      .sort((a, b) => {
+        if (Object.keys(a).length > Object.keys(b).length) {
+          return -1
+        }
+        if (Object.keys(a).length < Object.keys(b).length) {
+          return 1
+        }
+        if (Number(a['5Y']) > Number(b['5Y'])) {
+          return -1
+        }
+        if (Number(a['5Y']) < Number(b['5Y'])) {
+          return 1
+        }
+        if (Number(a['3Y']) > Number(b['3Y'])) {
+          return -1
+        }
+        if (Number(a['3Y']) < Number(b['3Y'])) {
+          return 1
+        }
+        return 0
+      })
   }
 
   async getAllFollowSuperInvestor(): Promise<FollowSuperInvestorResponse[]> {
@@ -69,6 +132,7 @@ export class WatchListsService {
       { sa_ids: '1051', ticker: 'TXN', targetPrice: 159.04, company: 'Texas Instruments Incorporated' },
       { sa_ids: '1278', ticker: 'NVO', targetPrice: 103.45, company: ' Novo Nordisk A/S' },
     ]
+
     return this.handleCheckPriceRealTime(stocks)
   }
   //https://seekingalpha.com/api/v3/symbol_data?fields[]=divDistribution&fields[]=dividends&slugs=AAPL
