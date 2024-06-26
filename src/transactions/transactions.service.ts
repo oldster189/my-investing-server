@@ -12,6 +12,9 @@ import { TransactionType } from 'src/shared/enums/transaction-type.enum'
 import * as dayjs from 'dayjs'
 import { UpdateStocksRequest } from 'src/stocks/requests/create-stocks.request'
 import { ExchangeQuery } from 'src/exchanges/requests/query-exchange.request'
+import * as IVV from './ivv.json'
+import * as QQQM from './qqqm.json'
+import axios from 'axios'
 
 @Injectable()
 export class TransactionsService {
@@ -21,13 +24,30 @@ export class TransactionsService {
     private readonly stocksService: StocksService,
   ) {}
 
+  async test() {
+    // show dupluicate key by as_of_date from IVV.data
+    const { data } = await axios.get(
+      'https://seekingalpha.com/api/v3/historical_prices?filter[ticker][slug]=ivv&&filter[as_of_date][gte]=Fri%20Oct%2028%202022&filter[as_of_date][lte]=Wed%20Nov%2030%202022&sort=as_of_date',
+      {
+        headers: {
+          'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"macOS"',
+          Referer: 'https://seekingalpha.com/symbol/IVV/historical-price-quotes',
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+        },
+      },
+    )
+    return data
+  }
+
   async get(id: string): Promise<TransactionResponse> {
     const item = await this.transactionModel.findById(id)
     return modelMapper(TransactionResponse, item)
   }
 
   async getAll(): Promise<TransactionResponse[]> {
-    const list = await this.transactionModel.find()
+    const list = await this.transactionModel.find().sort({ dateOfOrder: -1 })
     return modelMapper(TransactionListResponse, { data: list }).data
   }
 
@@ -4249,33 +4269,51 @@ export class TransactionsService {
     },
   ]
 
-  getCurrentStock(date: string) {
-    const currentStock = this.priceHistories.find((item) => {
+  getCurrentStock(date: string, symbol: string) {
+    const list = symbol === 'IVV' ? IVV.data : QQQM.data
+    const currentStock = list.find((item) => {
       return item.attributes.as_of_date === date
     })
+
     if (!currentStock) {
       const newDate = dayjs(date).add(1, 'day').format('YYYY-MM-DD')
-      return this.getCurrentStock(newDate)
+      return this.getCurrentStock(newDate, symbol)
     }
 
     return currentStock
   }
 
-  async createByZant(portfolioId: string): Promise<TransactionResponse[]> {
+  async getLastItemByPortfolioId(portfolioId: string, symbol: string): Promise<TransactionResponse> {
+    const data = await this.transactionModel.findOne({ portfolioId, 'stocks.symbol': symbol }).sort({ dateOfOrder: -1 })
+    return modelMapper(TransactionResponse, data)
+  }
+
+  // สำหรับดึง json  มาสร้าง transaction
+  // https://seekingalpha.com/api/v3/historical_prices?filter[ticker][slug]=qqqm&&filter[as_of_date][gte]=Fri Nov 1 2022&filter[as_of_date][lte]=Tue Jun 25 2024&sort=as_of_date
+  async createByZant(portfolioId: string, symbol: string): Promise<any> {
     try {
-      const ivv = await this.stocksService.get('IVV')
-      const query: ExchangeQuery = { type: 'all' }
+      const stock = await this.stocksService.get(symbol)
+      const lastData = await this.getLastItemByPortfolioId(portfolioId, symbol)
+      let query: ExchangeQuery = { type: 'all' }
+      if (lastData) {
+        query = {
+          type: 'customs',
+          startDate: dayjs(lastData.dateOfOrder).add(1, 'day').toISOString(),
+          endDate: dayjs().toISOString(),
+        }
+      }
+
       const exchanges = await this.exchangesService.getAllByPortfolioId(portfolioId, query)
       for (let index = 0; index < exchanges.length; index++) {
         const exchange = exchanges[index]
 
         const date = dayjs(exchange.dateOfOrder).format('YYYY-MM-DD')
-        const currentStock = this.getCurrentStock(date)
+        const currentStock = this.getCurrentStock(date, symbol)
 
         const closePrice = currentStock.attributes.close
         const amountUSD = exchange.to.amount
         const buyStock: UpdateStocksRequest = {
-          ...ivv,
+          ...stock,
           price: closePrice,
           share: amountUSD / closePrice,
         }
@@ -4293,8 +4331,11 @@ export class TransactionsService {
 
         await new this.transactionModel(body).save()
       }
-      return this.getAllBySymbol('IVV')
-    } catch (error) {}
+
+      return this.getAllBySymbol(symbol)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async update(updateRequest: UpdateTransactionRequest): Promise<TransactionResponse> {

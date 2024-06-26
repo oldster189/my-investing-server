@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { CreateTransactionRequest, UpdateTransactionRequest } from './requests/create-transaction.request'
 import { TransactionResponse } from './responses/transaction.response'
 import { TransactionsService } from './transactions.service'
@@ -7,6 +7,10 @@ import { TransactionsService } from './transactions.service'
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
+  @Get('test')
+  test(): Promise<any> {
+    return this.transactionsService.test()
+  }
   @Get('list')
   getAll(): Promise<TransactionResponse[]> {
     return this.transactionsService.getAll()
@@ -23,8 +27,11 @@ export class TransactionsController {
   }
 
   @Post('zant/:portfolioId')
-  createByZant(@Param('portfolioId') portfolioId: string): Promise<TransactionResponse[]> {
-    return this.transactionsService.createByZant(portfolioId)
+  createByZant(
+    @Param('portfolioId') portfolioId: string,
+    @Query('symbol') symbol: string,
+  ): Promise<TransactionResponse[]> {
+    return this.transactionsService.createByZant(portfolioId, symbol)
   }
 
   @Post()
