@@ -8,8 +8,8 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Get('test')
-  test(): Promise<any> {
-    return this.transactionsService.test()
+  test(@Query('symbol') symbol: string): Promise<any> {
+    return this.transactionsService.test(symbol)
   }
   @Get('list')
   getAll(): Promise<TransactionResponse[]> {
